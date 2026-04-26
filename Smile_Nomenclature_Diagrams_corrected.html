@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smile Nomenclature · Trader vs SVI-JWK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']] }, svg: {fontCache:'global'} };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --ink-soft: #3a3a3a;
+    --ink-muted: #6a6a6a;
+    --paper: #faf8f3;
+    --paper-card: #ffffff;
+    --rule: #d9d4c7;
+    --rule-soft: #ebe6d8;
+    --accent: #1e4a3a;
+    --trader: #b8624a;
+    --trader-soft: #f5e8e3;
+    --model: #1e4a3a;
+    --model-soft: #e8efe6;
+    --smile: #1a1a1a;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 14;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.6;
+    font-size: 17px;
+  }
+
+  .page {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 64px 48px 96px;
+    background: var(--paper-card);
+    box-shadow: 0 0 80px rgba(0,0,0,0.04);
+  }
+
+  header {
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 48px;
+  }
+
+  .kicker {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 100;
+    font-weight: 500;
+    font-size: 42px;
+    line-height: 1.1;
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    font-size: 18px;
+    color: var(--ink-muted);
+    font-style: italic;
+    max-width: 640px;
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 60;
+    font-weight: 500;
+    font-size: 26px;
+    margin: 56px 0 8px;
+    letter-spacing: -0.01em;
+  }
+
+  h2::before {
+    content: attr(data-num);
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  p {
+    margin: 0 0 16px;
+    max-width: 70ch;
+  }
+
+  p.lede {
+    font-size: 18px;
+    color: var(--ink-soft);
+    font-style: italic;
+    margin-bottom: 24px;
+  }
+
+  /* ── DIAGRAM FRAME ─────────────────────────────────── */
+  .diagram-wrap {
+    margin: 32px -8px;
+    padding: 16px 8px 8px;
+    background: #fdfcf8;
+    border: 1px solid var(--rule-soft);
+    overflow-x: auto;
+  }
+
+  .diagram-wrap svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ── TRADER VS MODEL LEGEND DOTS ─────────────────────────────────── */
+  .tag {
+    display: inline-block;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 2px;
+    margin-right: 8px;
+  }
+  .tag.trader { background: var(--trader-soft); color: var(--trader); }
+  .tag.model  { background: var(--model-soft); color: var(--model); }
+
+  /* ── PARAMETER/MARKET VALUES BOX ─────────────────────────────────── */
+  .values-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .values-box > div {
+    padding: 16px 20px;
+    border-left: 3px solid;
+  }
+
+  .values-box .tv { border-color: var(--trader); background: #fef8f5; }
+  .values-box .mv { border-color: var(--accent); background: #f4f7f2; }
+
+  .values-box h4 {
+    margin: 0 0 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .values-box .tv h4 { color: var(--trader); }
+  .values-box .mv h4 { color: var(--accent); }
+
+  .values-box ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .values-box ul li {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted var(--rule);
+    padding: 3px 0;
+  }
+
+  .values-box ul li:last-child { border-bottom: none; }
+
+  .values-box .param-name { color: var(--ink-soft); }
+  .values-box .param-val { font-weight: 500; color: var(--ink); }
+
+  /* ── MAPPING TABLE ─────────────────────────────────── */
+  .map-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 32px 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+  }
+
+  .map-table th {
+    padding: 10px 12px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-align: left;
+    color: var(--ink);
+    background: var(--paper);
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .map-table td {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--rule-soft);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .map-table td:nth-child(1) {
+    color: var(--trader);
+    font-weight: 600;
+  }
+
+  .map-table td:nth-child(2) {
+    text-align: center;
+    color: var(--ink-muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    width: 60px;
+  }
+
+  .map-table td:nth-child(3) {
+    color: var(--accent);
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    width: 140px;
+  }
+
+  /* ── NOTE BOX ─────────────────────────────────── */
+  .note {
+    background: var(--model-soft);
+    border-left: 3px solid var(--accent);
+    padding: 14px 20px;
+    margin: 24px 0;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .note strong {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  code { font-family: 'JetBrains Mono', monospace; font-size: 0.9em; }
+
+  @media (max-width: 760px) {
+    .page { padding: 32px 20px; }
+    .values-box { grid-template-columns: 1fr; }
+    h1 { font-size: 30px; }
+  }
+</style>
+</head>
+
+<body>
+<main class="page">
+
+<header>
+  <div class="kicker">Nomenclature Diagram · Smile Parameters</div>
+  <h1>Two ways of reading<br>the same <em>volatility smile</em></h1>
+  <p class="subtitle">A side-by-side visual of how a trader describes a smile (strikes, risk reversal, butterfly) versus how the SVI-JWK model describes the same smile (ATM variance, skew, kurtosis, put wing, call wing). All numbers are from one worked NK225 1-year slice.</p>
+</header>
+
+<p class="lede">The two diagrams below show <strong>the same curve</strong>. Nothing changes except the labels and the axis convention. The numbers are derived from the raw SVI parameters $(a,b,\rho,m,\sigma) = (0.020, 0.060, -0.50, 0.00, 0.20)$ which produce the SVI-JWK parameters shown on the right.</p>
+
+<div class="values-box">
+  <div class="tv">
+    <h4>Trader's observables (market)</h4>
+    <ul>
+      <li><span class="param-name">ATM implied vol</span> <span class="param-val">17.89 %</span></li>
+      <li><span class="param-name">25d put vol</span> <span class="param-val">19.25 %</span></li>
+      <li><span class="param-name">25d call vol</span> <span class="param-val">17.44 %</span></li>
+      <li><span class="param-name">Risk reversal (P−C)</span> <span class="param-val">+1.81 pts</span></li>
+      <li><span class="param-name">Butterfly</span> <span class="param-val">+0.46 pts</span></li>
+    </ul>
+  </div>
+  <div class="mv">
+    <h4>SVI-JWK parameters (model)</h4>
+    <ul>
+      <li><span class="param-name">√ν<sub>t</sub> (ATM vol)</span> <span class="param-val">17.89 %</span></li>
+      <li><span class="param-name">ψ<sub>t</sub> (ATM skew)</span> <span class="param-val">−0.0839</span></li>
+      <li><span class="param-name">κ<sub>t</sub> (ATM kurtosis)</span> <span class="param-val">4.578</span></li>
+      <li><span class="param-name">p<sub>t</sub> (put wing slope)</span> <span class="param-val">0.503</span></li>
+      <li><span class="param-name">c<sub>t</sub> (call wing slope)</span> <span class="param-val">0.168</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     DIAGRAM 1 — TRADER'S VIEW
+     ══════════════════════════════════════════════════════════ -->
+
+<h2 data-num="Diagram 1">The trader's view — strikes, risk reversal, butterfly</h2>
+<p>The trader thinks in <strong>strikes as a percentage of the forward</strong>. The reference points that matter are the 25-delta put (OTM put), the at-the-money forward, and the 25-delta call (OTM call). The <em>shape</em> of the smile is then described by two numbers drawn <em>across</em> these strikes: the <strong>risk reversal</strong> (put vol minus call vol — the tilt) and the <strong>butterfly</strong> (average of wing vols minus ATM — the convexity).</p>
+
+<div class="diagram-wrap">
+<svg viewBox="0 0 860 460" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Title inside SVG -->
+  <text x="430" y="24" text-anchor="middle" font-family="Fraunces, serif" font-size="17" font-style="italic" fill="#3a3a3a">NK225 1-year implied volatility smile · trader's nomenclature</text>
+
+  <!-- Plot area: x 90→770, y 70→360  (K/F from 0.70 to 1.45) -->
+
+  <!-- Grid lines -->
+  <g stroke="#ebe6d8" stroke-width="1">
+    <!-- Vertical gridlines at K/F = 0.80, 0.90, 1.00, 1.10, 1.20, 1.30, 1.40 -->
+    <line x1="180.7" y1="70" x2="180.7" y2="360"/>
+    <line x1="271.3" y1="70" x2="271.3" y2="360"/>
+    <line x1="362.0" y1="70" x2="362.0" y2="360"/>
+    <line x1="452.7" y1="70" x2="452.7" y2="360"/>
+    <line x1="543.3" y1="70" x2="543.3" y2="360"/>
+    <line x1="634.0" y1="70" x2="634.0" y2="360"/>
+    <line x1="724.7" y1="70" x2="724.7" y2="360"/>
+    <!-- Horizontal gridlines at σ = 18, 20, 22, 24 -->
+    <line x1="90" y1="285.0" x2="770" y2="285.0"/>
+    <line x1="90" y1="210.0" x2="770" y2="210.0"/>
+    <line x1="90" y1="135.0" x2="770" y2="135.0"/>
+  </g>
+
+  <!-- Horizontal reference line at ATM (σ=17.89) -->
+  <line x1="90" y1="291.5" x2="770" y2="291.5" stroke="#6a6a6a" stroke-width="0.8" stroke-dasharray="2,3"/>
+  <text x="95" y="288" font-size="10" fill="#6a6a6a" font-style="italic">ATM = 17.89%</text>
+
+  <!-- Axes -->
+  <line x1="90" y1="70" x2="90" y2="360" stroke="#1a1a1a" stroke-width="1.2"/>
+  <line x1="90" y1="360" x2="770" y2="360" stroke="#1a1a1a" stroke-width="1.2"/>
+
+  <!-- X axis ticks and labels -->
+  <g font-size="11" font-family="Inter, sans-serif" fill="#3a3a3a" text-anchor="middle">
+    <text x="180.7" y="378">80%</text>
+    <text x="271.3" y="378">90%</text>
+    <text x="362.0" y="378">100%</text>
+    <text x="452.7" y="378">110%</text>
+    <text x="543.3" y="378">120%</text>
+    <text x="634.0" y="378">130%</text>
+    <text x="724.7" y="378">140%</text>
+    <text x="430" y="405" font-weight="600">Strike as % of forward  (K / F)</text>
+    <text x="430" y="422" font-size="10" font-style="italic" fill="#6a6a6a">← Puts (low strike)    |    Calls (high strike) →</text>
+  </g>
+
+  <!-- Y axis ticks and labels -->
+  <g font-size="11" font-family="Inter, sans-serif" fill="#3a3a3a" text-anchor="end">
+    <text x="83" y="364">16%</text>
+    <text x="83" y="289">18%</text>
+    <text x="83" y="214">20%</text>
+    <text x="83" y="139">22%</text>
+    <text x="83" y="74">24%</text>
+  </g>
+  <text x="40" y="215" font-size="11" font-family="Inter, sans-serif" font-weight="600" fill="#3a3a3a" transform="rotate(-90 40 215)" text-anchor="middle">Implied Volatility  σ_BS</text>
+
+  <!-- The smile curve (K/F axis) -->
+  <path d="M 94.3,92.3 107.2,105.0 120.3,117.9 133.8,130.8 147.5,143.7 161.4,156.6 175.7,169.4 190.3,182.2 205.1,194.9 220.3,207.3 235.7,219.5 251.5,231.4 267.6,242.8 284.0,253.6 300.7,263.6 317.8,272.9 335.2,281.1 353.0,288.4 371.1,294.4 389.6,299.3 408.5,303.1 427.7,305.7 447.4,307.3 467.4,308.0 487.9,307.8 508.7,306.9 530.0,305.4 551.7,303.3 573.9,300.7 596.5,297.8 619.5,294.5 643.0,290.9 667.0,287.1 691.5,283.1 716.5,279.0 742.0,274.7"
+    fill="none" stroke="#1a1a1a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- ATM marker (K/F=1.00, σ=17.89%) -->
+  <circle cx="362.0" cy="291.5" r="5" fill="#b8624a"/>
+  <circle cx="362.0" cy="291.5" r="5" fill="none" stroke="#fff" stroke-width="1.5"/>
+
+  <!-- 25d put marker (K/F=0.895, σ=19.25%) -->
+  <circle cx="266.5" cy="242.0" r="5" fill="#b8624a"/>
+  <circle cx="266.5" cy="242.0" r="5" fill="none" stroke="#fff" stroke-width="1.5"/>
+
+  <!-- 25d call marker (K/F=1.142, σ=17.44%) -->
+  <circle cx="490.8" cy="307.7" r="5" fill="#b8624a"/>
+  <circle cx="490.8" cy="307.7" r="5" fill="none" stroke="#fff" stroke-width="1.5"/>
+
+  <!-- Annotations -->
+
+  <!-- 25d put label -->
+  <line x1="266.5" y1="242.0" x2="220" y2="200" stroke="#b8624a" stroke-width="0.8"/>
+  <text x="216" y="195" font-size="12" font-family="Inter, sans-serif" fill="#b8624a" text-anchor="end" font-weight="600">25-delta put</text>
+  <text x="216" y="209" font-size="11" font-family="JetBrains Mono, monospace" fill="#b8624a" text-anchor="end">K/F = 89.5%</text>
+  <text x="216" y="223" font-size="11" font-family="JetBrains Mono, monospace" fill="#b8624a" text-anchor="end">σ = 19.25%</text>
+
+  <!-- ATM label -->
+  <line x1="362.0" y1="291.5" x2="362.0" y2="325" stroke="#b8624a" stroke-width="0.8"/>
+  <text x="362.0" y="340" font-size="12" font-family="Inter, sans-serif" fill="#b8624a" text-anchor="middle" font-weight="600">ATM forward</text>
+  <text x="362.0" y="354" font-size="11" font-family="JetBrains Mono, monospace" fill="#b8624a" text-anchor="middle">σ = 17.89%</text>
+
+  <!-- 25d call label -->
+  <line x1="490.8" y1="307.7" x2="560" y2="335" stroke="#b8624a" stroke-width="0.8"/>
+  <text x="565" y="340" font-size="12" font-family="Inter, sans-serif" fill="#b8624a" font-weight="600">25-delta call</text>
+  <text x="565" y="354" font-size="11" font-family="JetBrains Mono, monospace" fill="#b8624a">K/F = 114.2%, σ = 17.44%</text>
+
+  <!-- Risk Reversal annotation: bracket between 25d put and 25d call IV levels -->
+  <!-- Draw a curly bracket on the right showing the vol difference -->
+  <g stroke="#b8624a" stroke-width="1.2" fill="none">
+    <!-- Vertical line at x=620 from σ=17.44 (y=307.7) to σ=19.25 (y=242.0) -->
+    <line x1="600" y1="242.0" x2="600" y2="307.7"/>
+    <!-- top cap -->
+    <line x1="595" y1="242.0" x2="605" y2="242.0"/>
+    <!-- bottom cap -->
+    <line x1="595" y1="307.7" x2="605" y2="307.7"/>
+    <!-- arrow indicators -->
+    <path d="M 490.8 307.7 Q 545 307.7 595 307.7" stroke-dasharray="2,2"/>
+    <path d="M 266.5 242.0 Q 430 242.0 595 242.0" stroke-dasharray="2,2"/>
+  </g>
+  <text x="615" y="270" font-size="12" font-family="Inter, sans-serif" fill="#b8624a" font-weight="600">Risk reversal</text>
+  <text x="615" y="284" font-size="11" font-family="Inter, sans-serif" fill="#b8624a">(put − call)</text>
+  <text x="615" y="300" font-size="13" font-family="JetBrains Mono, monospace" fill="#b8624a" font-weight="500">= +1.81%</text>
+
+  <!-- Butterfly annotation: average of wings vs ATM -->
+  <!-- (19.25 + 17.44)/2 = 18.345, y = 360 - (18.345-16)/8*300 = 360 - 87.94 = 272.06 -->
+  <g stroke="#b8624a" stroke-width="1.2" fill="none" stroke-dasharray="3,2">
+    <line x1="362.0" y1="272.06" x2="362.0" y2="291.5"/>
+  </g>
+  <line x1="358" y1="272.06" x2="366" y2="272.06" stroke="#b8624a" stroke-width="1.2"/>
+  <text x="375" y="282" font-size="11" font-family="Inter, sans-serif" fill="#b8624a" font-style="italic">Butterfly = +0.46%</text>
+
+  <!-- Region labels for wings -->
+  <rect x="105" y="85" width="95" height="32" rx="2" fill="#f5e8e3" stroke="#b8624a" stroke-width="0.6"/>
+  <text x="152" y="100" font-size="11" font-family="Inter, sans-serif" fill="#b8624a" font-weight="700" text-anchor="middle">PUT WING</text>
+  <text x="152" y="112" font-size="10" font-family="Inter, sans-serif" fill="#b8624a" text-anchor="middle">(deep OTM puts)</text>
+
+  <rect x="660" y="85" width="100" height="32" rx="2" fill="#f5e8e3" stroke="#b8624a" stroke-width="0.6"/>
+  <text x="710" y="100" font-size="11" font-family="Inter, sans-serif" fill="#b8624a" font-weight="700" text-anchor="middle">CALL WING</text>
+  <text x="710" y="112" font-size="10" font-family="Inter, sans-serif" fill="#b8624a" text-anchor="middle">(deep OTM calls)</text>
+
+  <!-- Legend -->
+  <rect x="90" y="430" width="14" height="3" fill="#1a1a1a"/>
+  <text x="110" y="434" font-size="11" font-family="Inter, sans-serif" fill="#3a3a3a">Implied vol curve</text>
+  <circle cx="232" cy="432" r="4" fill="#b8624a"/>
+  <text x="242" y="434" font-size="11" font-family="Inter, sans-serif" fill="#3a3a3a">Trader's reference points &amp; measurements</text>
+
+</svg>
+</div>
+
+<div class="note">
+<strong>Reading the trader diagram</strong>
+Wings sit at <em>both</em> extreme strikes — the left region (deep OTM puts, K/F below ~85%) is the put wing; the right region (deep OTM calls, K/F above ~115%) is the call wing. The "risk reversal" is a single number measuring the <em>height difference</em> between the 25-delta put and 25-delta call — it captures the smile's asymmetry. The "butterfly" measures how far above ATM the average of the two wing vols sits — the curvature. So "skew" to a trader is approximately the risk reversal; "kurtosis" is approximately the butterfly.
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     DIAGRAM 2 — SVI-JWK MODEL VIEW
+     ══════════════════════════════════════════════════════════ -->
+
+<h2 data-num="Diagram 2">The SVI-JWK view — five parameters at ATM and in the wings</h2>
+<p>The model describes the <strong>same curve</strong> with five numbers. Each is a geometric property evaluated at a specific location: three of them live <em>at the money</em> (level, local tangent slope, local curvature), and two live <em>in the wings</em> as asymptotic slope measures of <strong>total implied variance</strong>, not literal slopes of the implied-volatility curve. The x-axis here is log-moneyness $k = \ln(K/F)$, which is the model's native coordinate.</p>
+
+<div class="diagram-wrap">
+<svg viewBox="0 0 860 460" xmlns="http://www.w3.org/2000/svg">
+
+  <text x="430" y="24" text-anchor="middle" font-family="Fraunces, serif" font-size="17" font-style="italic" fill="#3a3a3a">Same smile · SVI-JWK parameter geometry</text>
+
+  <!-- Plot area: x 90→770, y 70→360  (k from -0.35 to +0.35) -->
+
+  <!-- Grid -->
+  <g stroke="#ebe6d8" stroke-width="1">
+    <line x1="187.1" y1="70" x2="187.1" y2="360"/>
+    <line x1="284.3" y1="70" x2="284.3" y2="360"/>
+    <line x1="381.4" y1="70" x2="381.4" y2="360"/>
+    <line x1="430" y1="70"   x2="430" y2="360" stroke="#d9d4c7" stroke-width="1.2"/>
+    <line x1="478.6" y1="70" x2="478.6" y2="360"/>
+    <line x1="575.7" y1="70" x2="575.7" y2="360"/>
+    <line x1="672.9" y1="70" x2="672.9" y2="360"/>
+    <line x1="90" y1="285.0" x2="770" y2="285.0"/>
+    <line x1="90" y1="210.0" x2="770" y2="210.0"/>
+    <line x1="90" y1="135.0" x2="770" y2="135.0"/>
+  </g>
+
+  <!-- ATM reference -->
+  <line x1="90" y1="291.5" x2="770" y2="291.5" stroke="#6a6a6a" stroke-width="0.8" stroke-dasharray="2,3"/>
+
+  <!-- Axes -->
+  <line x1="90" y1="70" x2="90" y2="360" stroke="#1a1a1a" stroke-width="1.2"/>
+  <line x1="90" y1="360" x2="770" y2="360" stroke="#1a1a1a" stroke-width="1.2"/>
+
+  <!-- X axis -->
+  <g font-size="11" font-family="Inter, sans-serif" fill="#3a3a3a" text-anchor="middle">
+    <text x="187.1" y="378">−0.30</text>
+    <text x="284.3" y="378">−0.20</text>
+    <text x="381.4" y="378">−0.10</text>
+    <text x="430"   y="378" font-weight="700" fill="#1e4a3a">0</text>
+    <text x="478.6" y="378">+0.10</text>
+    <text x="575.7" y="378">+0.20</text>
+    <text x="672.9" y="378">+0.30</text>
+    <text x="430" y="405" font-weight="600">Log-moneyness  k = ln(K / F)</text>
+    <text x="430" y="422" font-size="10" font-style="italic" fill="#6a6a6a">← put wing (k &lt; 0)    ATM    call wing (k &gt; 0) →</text>
+  </g>
+
+  <!-- Y axis -->
+  <g font-size="11" font-family="Inter, sans-serif" fill="#3a3a3a" text-anchor="end">
+    <text x="83" y="364">16%</text>
+    <text x="83" y="289">18%</text>
+    <text x="83" y="214">20%</text>
+    <text x="83" y="139">22%</text>
+    <text x="83" y="74">24%</text>
+  </g>
+  <text x="40" y="215" font-size="11" font-family="Inter, sans-serif" font-weight="600" fill="#3a3a3a" transform="rotate(-90 40 215)" text-anchor="middle">Implied Volatility  σ_BS</text>
+
+  <!-- LEFT WING TANGENT (slope p_t region) — extrapolated line showing wing slope -->
+  <line x1="90.0" y1="92.1" x2="332.9" y2="253.1" stroke="#1e4a3a" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.7"/>
+
+  <!-- RIGHT WING TANGENT (slope c_t region) -->
+  <line x1="527.1" y1="325.1" x2="770.0" y2="275.2" stroke="#1e4a3a" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.7"/>
+
+  <!-- ATM TANGENT (slope ψ_t, the skew) -->
+  <line x1="313.4" y1="255.1" x2="546.6" y2="328.0" stroke="#1e4a3a" stroke-width="1.8"/>
+
+  <!-- The smile curve -->
+  <path d="M 90.0,92.3 109.4,105.0 128.9,117.9 148.3,130.8 167.7,143.7 187.1,156.6 206.6,169.4 226.0,182.2 245.4,194.9 264.9,207.3 284.3,219.5 303.7,231.4 323.1,242.8 342.6,253.6 362.0,263.6 381.4,272.9 400.9,281.1 420.3,288.4 439.7,294.4 459.1,299.3 478.6,303.1 498.0,305.7 517.4,307.3 536.9,308.0 556.3,307.8 575.7,306.9 595.1,305.4 614.6,303.3 634.0,300.7 653.4,297.8 672.9,294.5 692.3,290.9 711.7,287.1 731.1,283.1 750.6,279.0 770.0,274.7"
+    fill="none" stroke="#1a1a1a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- ATM marker showing √ν_t level -->
+  <circle cx="430" cy="291.5" r="6" fill="#1e4a3a"/>
+  <circle cx="430" cy="291.5" r="6" fill="none" stroke="#fff" stroke-width="1.5"/>
+
+  <!-- Vertical arrow showing √ν_t level from x-axis to ATM point -->
+  <g stroke="#1e4a3a" stroke-width="1.2" fill="none">
+    <line x1="430" y1="360" x2="430" y2="298" marker-end="url(#arrow-up)"/>
+  </g>
+  <defs>
+    <marker id="arrow-up" markerWidth="8" markerHeight="8" refX="4" refY="2" orient="auto">
+      <polygon points="0,0 8,2 0,4" fill="#1e4a3a" transform="rotate(-90 4 2)"/>
+    </marker>
+    <marker id="arrow-tip" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <polygon points="0,0 10,5 0,10" fill="#1e4a3a"/>
+    </marker>
+  </defs>
+
+  <!-- ν_t label -->
+  <g>
+    <line x1="430" y1="330" x2="560" y2="360" stroke="#1e4a3a" stroke-width="0.8"/>
+    <rect x="560" y="348" width="140" height="24" rx="2" fill="#e8efe6" stroke="#1e4a3a" stroke-width="0.8"/>
+    <text x="570" y="364" font-size="12" font-family="Inter, sans-serif" fill="#1e4a3a" font-weight="600">√ν_t = 17.89%</text>
+  </g>
+
+  <!-- ψ_t (ATM skew) label -->
+  <g>
+    <line x1="430" y1="291.5" x2="470" y2="250" stroke="#1e4a3a" stroke-width="0.6" stroke-dasharray="2,2"/>
+    <line x1="470" y1="250" x2="580" y2="235" stroke="#1e4a3a" stroke-width="0.8"/>
+    <rect x="580" y="222" width="160" height="42" rx="2" fill="#e8efe6" stroke="#1e4a3a" stroke-width="0.8"/>
+    <text x="590" y="238" font-size="12" font-family="Inter, sans-serif" fill="#1e4a3a" font-weight="600">ψ_t = −0.0839</text>
+    <text x="590" y="252" font-size="10" font-family="Inter, sans-serif" fill="#1e4a3a" font-style="italic">slope of tangent at ATM</text>
+  </g>
+
+  <!-- Small curvature indicator at ATM for κ_t -->
+  <g>
+    <path d="M 405 290 Q 430 302 455 290" fill="none" stroke="#1e4a3a" stroke-width="1.5" opacity="0.85"/>
+    <line x1="430" y1="296" x2="395" y2="395" stroke="#1e4a3a" stroke-width="0.8"/>
+    <text x="320" y="400" font-size="12" font-family="Inter, sans-serif" fill="#1e4a3a" font-weight="600">κ_t = 4.578</text>
+    <text x="320" y="414" font-size="10" font-family="Inter, sans-serif" fill="#1e4a3a" font-style="italic" text-anchor="start">curvature at ATM</text>
+  </g>
+
+  <!-- p_t (put wing) label -->
+  <g>
+    <line x1="170" y1="150" x2="140" y2="125" stroke="#1e4a3a" stroke-width="0.8"/>
+    <rect x="100" y="95" width="135" height="42" rx="2" fill="#e8efe6" stroke="#1e4a3a" stroke-width="0.8"/>
+    <text x="108" y="112" font-size="12" font-family="Inter, sans-serif" fill="#1e4a3a" font-weight="600">p_t = 0.503</text>
+    <text x="108" y="126" font-size="10" font-family="Inter, sans-serif" fill="#1e4a3a" font-style="italic">put-wing slope</text>
+  </g>
+
+  <!-- c_t (call wing) label -->
+  <g>
+    <line x1="700" y1="290" x2="720" y2="135" stroke="#1e4a3a" stroke-width="0.8"/>
+    <rect x="625" y="95" width="140" height="42" rx="2" fill="#e8efe6" stroke="#1e4a3a" stroke-width="0.8"/>
+    <text x="635" y="112" font-size="12" font-family="Inter, sans-serif" fill="#1e4a3a" font-weight="600">c_t = 0.168</text>
+    <text x="635" y="126" font-size="10" font-family="Inter, sans-serif" fill="#1e4a3a" font-style="italic">call-wing slope</text>
+  </g>
+
+  <!-- Legend -->
+  <rect x="90" y="430" width="14" height="3" fill="#1a1a1a"/>
+  <text x="110" y="434" font-size="11" font-family="Inter, sans-serif" fill="#3a3a3a">Implied vol curve</text>
+  <line x1="230" y1="432" x2="258" y2="432" stroke="#1e4a3a" stroke-width="1.8"/>
+  <text x="265" y="434" font-size="11" font-family="Inter, sans-serif" fill="#3a3a3a">ATM tangent (ψ_t slope)</text>
+  <line x1="410" y1="432" x2="438" y2="432" stroke="#1e4a3a" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="445" y="434" font-size="11" font-family="Inter, sans-serif" fill="#3a3a3a">Wing asymptote lines (p_t, c_t)</text>
+
+</svg>
+</div>
+
+<div class="note">
+<strong>Reading the SVI-JWK diagram</strong>
+$\sqrt{\nu_t}$ is where the smile sits at $k = 0$ — the vertical height of the ATM dot. $\psi_t$ is the slope of the <em>solid tangent line drawn at ATM</em> — it is small and negative, meaning the smile leans left (crash premium). $\kappa_t$ is the SVI-JWK ATM curvature / kurtosis parameter derived from the second-order behaviour of the total-variance smile around ATM — it is not statistical kurtosis of the underlying return distribution. $p_t$ and $c_t$ encode the normalised asymptotic slopes of total implied variance in the put and call wings. In this implied-volatility diagram, the dashed wing lines are visual steepness indicators, not literal volatility-curve slopes. Note that $p_t = 0.503$ is about 3× larger than $c_t = 0.168$: the put wing is steeper than the call wing in total-variance terms, which is why the left side of the curve rises faster than the right.
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     TRANSLATION TABLE
+     ══════════════════════════════════════════════════════════ -->
+
+<h2 data-num="Translation">Trader speak ↔ SVI-JWK speak</h2>
+<p>Once the visuals are clear, the intuitive mapping between trader language and model parameters is straightforward, but it is not a literal one-to-one numerical identity. Trader risk reversal and butterfly are finite-delta market observables; SVI-JWK stores local ATM skew, local ATM curvature, and asymptotic wing-slope measures in total-variance space:</p>
+
+
+<div class="note">
+<strong>Technical caution</strong>
+The left-hand trader quantities are quoted in implied-volatility points at finite delta points. The right-hand SVI-JWK quantities are model parameters derived from the total-variance slice $w(k,t)$. The symbols are therefore best read as conceptual correspondences, not as equal numerical quantities.
+</div>
+
+<table class="map-table">
+<thead>
+<tr>
+  <th>Trader says…</th>
+  <th>≈</th>
+  <th>SVI-JWK stores…</th>
+  <th>What it measures</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>"ATM vol is 17.89%"</td>
+  <td>↔</td>
+  <td>√ν_t</td>
+  <td>Where the smile sits vertically at k = 0</td>
+</tr>
+<tr>
+  <td>"Skew is 1.81 vol points" <br><small>(finite-delta risk reversal proxy)</small></td>
+  <td>≈</td>
+  <td>ψ_t</td>
+  <td>Local ATM skew: tangent slope of the total-variance smile around ATM</td>
+</tr>
+<tr>
+  <td>"Butterfly is 0.46 vol points" <br><small>(finite-delta curvature proxy)</small></td>
+  <td>≈</td>
+  <td>κ_t</td>
+  <td>SVI-JWK ATM curvature / kurtosis parameter; not statistical kurtosis</td>
+</tr>
+<tr>
+  <td>"Put wing is bid / steep"</td>
+  <td>≈</td>
+  <td>p_t</td>
+  <td>Normalised asymptotic slope of total implied variance in the low-$k$ put wing</td>
+</tr>
+<tr>
+  <td>"Call wing is offered / flat"</td>
+  <td>≈</td>
+  <td>c_t</td>
+  <td>Normalised asymptotic slope of total implied variance in the high-$k$ call wing</td>
+</tr>
+</tbody>
+</table>
+
+<div class="note" style="background: #f5e8e3; border-color: #b8624a;">
+<strong style="color: #b8624a;">To answer your question directly</strong>
+<p style="margin-top: 8px;"><strong>No — "skew" does not mean the low-strike region and "wings" does not mean the high-strike region.</strong></p>
+<p style="margin-top: 8px; margin-bottom: 0;"><em>Wings</em> sit at <strong>both</strong> extremes — the put wing is at low strikes (k &lt; 0), the call wing is at high strikes (k &gt; 0). <em>Skew</em> is not a region at all; it is the <strong>tilt of the smile at the money</strong>, measuring how much the put side rises faster than the call side as you move away from ATM. In SVI-JWK these are three different parameters: $p_t$ controls the put-wing slope measure, $c_t$ controls the call-wing slope measure, and $\psi_t$ controls the local ATM tilt. A smile can have strong local skew $(\psi_t \ll 0)$ with relatively mild wings $(p_t, c_t$ both small) — a market where downside is expensive close to the money but very far-tail slopes are not especially steep. Or it can have mild ATM skew with steep wings — a market that prices tails on both sides more symmetrically. SVI-JWK makes this distinction more transparent to traders and validators; raw SVI also contains the information, but in a less directly interpretable parameter set.</p>
+</div>
+
+</main>
+</body>
+</html>
