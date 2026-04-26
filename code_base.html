@@ -1,0 +1,542 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Andreasen–Huge Benchmark Test Pack</title><style>
+:root{--bg:#f6f4ef;--card:#fffdf8;--ink:#172033;--muted:#5d687a;--rule:#d8d0bf;--accent:#214e3f;--codebg:#111827;--code:#e5e7eb}*{box-sizing:border-box}body{margin:0;font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--ink);line-height:1.58}.page{max-width:1100px;margin:0 auto;padding:56px 46px 90px;background:var(--card);min-height:100vh;box-shadow:0 16px 60px rgba(0,0,0,.08)}header{border-bottom:2px solid var(--ink);padding-bottom:24px;margin-bottom:34px}.kicker{font-family:Arial,sans-serif;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:10px}h1{margin:0;font-size:40px;line-height:1.05;font-weight:500}.subtitle{margin-top:12px;color:var(--muted);max-width:850px;font-size:18px;font-style:italic}h2{margin-top:44px;padding-bottom:8px;border-bottom:1px solid var(--rule);font-size:26px}p,li{font-size:16px}.card{border:1px solid var(--rule);background:#fff;padding:20px 22px;border-radius:10px;margin:20px 0}.warn{border-left:5px solid #a8431f;background:#fff7f0}.good{border-left:5px solid var(--accent);background:#f3faf6}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.grid .card{margin:0}.meta{font-family:Arial,sans-serif;font-size:13px;color:var(--muted)}table{width:100%;border-collapse:collapse;margin:18px 0;font-family:Arial,sans-serif;font-size:14px}th,td{border:1px solid var(--rule);padding:10px 12px;vertical-align:top}th{background:#eef5f1;color:var(--accent);text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.08em}pre{background:var(--codebg);color:var(--code);padding:18px 20px;border-radius:10px;overflow-x:auto;font-size:13px;line-height:1.48}code{font-family:Consolas,'JetBrains Mono',monospace}.inline-code{background:#eee7d8;color:#111827;padding:2px 5px;border-radius:4px;font-family:Consolas,monospace;font-size:.92em}.file-title{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:34px}.file-title h2{border-bottom:none;margin:0;padding:0}.badge{font-family:Arial,sans-serif;font-size:12px;color:#fff;background:var(--accent);padding:4px 8px;border-radius:999px}.toc{background:#f8f5ec;border-left:4px solid var(--accent);padding:18px 22px;margin:26px 0;font-family:Arial,sans-serif}.toc a{color:var(--accent);text-decoration:none}.footer{margin-top:54px;padding-top:18px;border-top:1px solid var(--rule);color:var(--muted);font-family:Arial,sans-serif;font-size:12px}@media print{body{background:white}.page{box-shadow:none;padding:20px}pre{white-space:pre-wrap}}@media(max-width:800px){.page{padding:32px 20px}.grid{grid-template-columns:1fr}h1{font-size:30px}}
+</style></head><body><main class="page"><header><div class="kicker">Independent Benchmark Implementation Pack</div><h1>Andreasen–Huge Benchmark Test<br>for SVI-JWK Revalidation</h1><p class="subtitle">A shareable implementation guide for the junior developer: executable Python code, sample CSV input, and README/run instructions in one structured HTML file.</p></header>
+<section class="card warn"><strong>Validation positioning.</strong> This implementation is intended as an <strong>independent benchmark diagnostic</strong> against SVI-JWK, not as a replacement production model. Results should be compared against SVI-JWK on the same cleaned market quotes, forwards, rates, dividend/borrow assumptions, and grid conventions.</section>
+<section class="toc"><strong>Contents</strong><ol><li><a href="#overview">Purpose and developer workflow</a></li><li><a href="#files">Files included</a></li><li><a href="#python">Python implementation</a></li><li><a href="#csv">Sample input CSV</a></li><li><a href="#readme">README / run instructions</a></li></ol></section>
+<h2 id="overview">1. Purpose and developer workflow</h2><p>The test fits a QuantLib Andreasen–Huge interpolation to listed option implied-volatility quotes, then exports fitted implied volatility, local volatility, call prices, and basic grid-level static-arbitrage diagnostics. The benchmark is structurally different from SVI-JWK because it is based on an option-price/local-volatility interpolation approach rather than an SVI-family total-variance parameterisation.</p><div class="grid"><div class="card good"><strong>Step 1</strong><br>Install QuantLib-Python and run the sample CSV to confirm environment readiness.</div><div class="card good"><strong>Step 2</strong><br>Replace sample CSV with production quotes requested from the model owner.</div><div class="card good"><strong>Step 3</strong><br>Compare AH output to SVI-JWK fitted IVs, prices, densities, and arbitrage diagnostics.</div></div>
+<h2 id="files">2. Files included</h2><table><thead><tr><th>File</th><th>Purpose</th><th>Expected user</th></tr></thead><tbody><tr><td><span class="inline-code">andreasen_huge_benchmark_test.py</span></td><td>Executable QuantLib-Python benchmark script.</td><td>Junior developer / validator</td></tr><tr><td><span class="inline-code">sample_ah_option_quotes.csv</span></td><td>Small synthetic input file to verify the run path and output generation.</td><td>Junior developer</td></tr><tr><td><span class="inline-code">README_andreasen_huge_benchmark.md</span></td><td>Installation, run commands, expected output files, and input-field explanation.</td><td>Junior developer / reviewer</td></tr></tbody></table><section class="card warn"><strong>Implementation caveat.</strong> The code uses QuantLib-Python's standard Andreasen–Huge classes. It was syntax-checked in the generation environment, but full QuantLib calibration must be run in an environment where <span class="inline-code">QuantLib</span> is installed.</section>
+<div class="file-title" id="python"><h2>Python implementation</h2><span class="badge">andreasen_huge_benchmark_test.py</span></div><p class="meta">Copy the block below into a file named <span class="inline-code">andreasen_huge_benchmark_test.py</span>.</p><pre><code class="language-python">#!/usr/bin/env python3
+&quot;&quot;&quot;
+Andreasen-Huge independent benchmark test for an SVI-JWK volatility surface review.
+
+Purpose
+-------
+This script fits the QuantLib Andreasen-Huge interpolation to market option implied-volatility
+quotes, exports fitted implied volatilities/local volatilities on a test grid, and computes
+basic static-arbitrage diagnostics on the benchmark call-price grid.
+
+Regulatory use
+--------------
+Use this as an independent benchmark diagnostic, not as a replacement production model. The
+main validation question is whether SVI-JWK fit/arbitrage findings persist under a structurally
+different local-volatility interpolation approach.
+
+Primary implementation references
+---------------------------------
+1. QuantLib-Python documentation, termstructures/volatility.html:
+   ql.AndreasenHugeVolatilityAdapter and ql.AndreasenHugeLocalVolAdapter examples.
+2. QuantLib annotated source:
+   ql.AndreasenHugeVolatilityInterpl is described as calibration of a local volatility surface
+   to a sparse grid of options; it exposes PiecewiseConstant, Linear and CubicSpline modes.
+3. Andreasen, J. and Huge, B. (2011), Volatility Interpolation, Risk/SSRN.
+4. Le Floc&#x27;h / Quants R Us practitioner note: polynomial/cubic interpolation of AH prices may
+   reintroduce convexity issues; for validation default to PiecewiseConstant or Linear.
+
+Dependencies
+------------
+    pip install QuantLib-Python
+
+No pandas dependency is required. CSV input/output uses Python standard library.
+&quot;&quot;&quot;
+
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import math
+import os
+import sys
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple
+
+try:
+    import QuantLib as ql
+except ModuleNotFoundError as exc:
+    raise SystemExit(
+        &quot;QuantLib-Python is required. Install with: pip install QuantLib-Python\n&quot;
+        &quot;This script intentionally uses QuantLib&#x27;s standard Andreasen-Huge implementation.&quot;
+    ) from exc
+
+
+@dataclass(frozen=True)
+class QuoteRow:
+    as_of_date: str
+    underlying: str
+    spot: float
+    risk_free_rate: float
+    dividend_yield: float
+    expiry: str
+    strike: float
+    option_type: str
+    implied_vol: float
+    quote_source: str
+
+    @property
+    def option_enum(self):
+        opt = self.option_type.strip().upper()
+        if opt in {&quot;C&quot;, &quot;CALL&quot;}:
+            return ql.Option.Call
+        if opt in {&quot;P&quot;, &quot;PUT&quot;}:
+            return ql.Option.Put
+        raise ValueError(f&quot;Unsupported option_type &#x27;{self.option_type}&#x27;. Use CALL/PUT or C/P.&quot;)
+
+
+def parse_args() -&gt; argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description=&quot;Fit Andreasen-Huge benchmark and export diagnostics.&quot;
+    )
+    parser.add_argument(&quot;--input&quot;, required=True, help=&quot;CSV quote file.&quot;)
+    parser.add_argument(&quot;--output-dir&quot;, default=&quot;ah_benchmark_output&quot;, help=&quot;Output folder.&quot;)
+    parser.add_argument(
+        &quot;--interpolation&quot;,
+        default=&quot;PiecewiseConstant&quot;,
+        choices=[&quot;PiecewiseConstant&quot;, &quot;Linear&quot;, &quot;CubicSpline&quot;],
+        help=&quot;Andreasen-Huge interpolation type. Default is PiecewiseConstant for validation conservatism.&quot;,
+    )
+    parser.add_argument(
+        &quot;--n-grid-points&quot;,
+        type=int,
+        default=500,
+        help=&quot;QuantLib AH finite-difference grid points. Default: 500.&quot;,
+    )
+    parser.add_argument(
+        &quot;--grid-strikes&quot;,
+        default=&quot;&quot;,
+        help=&quot;Optional comma-separated strikes for output grid. If blank, uses unique input strikes.&quot;,
+    )
+    parser.add_argument(
+        &quot;--extrapolate&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Allow surface extrapolation when querying output grid.&quot;,
+    )
+    return parser.parse_args()
+
+
+def read_quotes(path: str) -&gt; List[QuoteRow]:
+    required = {
+        &quot;as_of_date&quot;,
+        &quot;underlying&quot;,
+        &quot;spot&quot;,
+        &quot;risk_free_rate&quot;,
+        &quot;dividend_yield&quot;,
+        &quot;expiry&quot;,
+        &quot;strike&quot;,
+        &quot;option_type&quot;,
+        &quot;implied_vol&quot;,
+        &quot;quote_source&quot;,
+    }
+    with open(path, newline=&quot;&quot;, encoding=&quot;utf-8-sig&quot;) as f:
+        reader = csv.DictReader(f)
+        missing = required - set(reader.fieldnames or [])
+        if missing:
+            raise ValueError(f&quot;Input CSV missing columns: {sorted(missing)}&quot;)
+        rows: List[QuoteRow] = []
+        for i, r in enumerate(reader, start=2):
+            if not r.get(&quot;as_of_date&quot;) or not r.get(&quot;expiry&quot;):
+                raise ValueError(f&quot;Row {i}: as_of_date and expiry are mandatory.&quot;)
+            row = QuoteRow(
+                as_of_date=r[&quot;as_of_date&quot;].strip(),
+                underlying=r[&quot;underlying&quot;].strip(),
+                spot=float(r[&quot;spot&quot;]),
+                risk_free_rate=float(r[&quot;risk_free_rate&quot;]),
+                dividend_yield=float(r[&quot;dividend_yield&quot;]),
+                expiry=r[&quot;expiry&quot;].strip(),
+                strike=float(r[&quot;strike&quot;]),
+                option_type=r[&quot;option_type&quot;].strip(),
+                implied_vol=float(r[&quot;implied_vol&quot;]),
+                quote_source=r[&quot;quote_source&quot;].strip(),
+            )
+            if row.spot &lt;= 0 or row.strike &lt;= 0:
+                raise ValueError(f&quot;Row {i}: spot and strike must be positive.&quot;)
+            if row.implied_vol &lt;= 0:
+                raise ValueError(f&quot;Row {i}: implied_vol must be positive decimal, e.g. 0.20 for 20%.&quot;)
+            rows.append(row)
+    if len(rows) &lt; 5:
+        raise ValueError(&quot;At least five option quotes are recommended for this benchmark.&quot;)
+    return rows
+
+
+def validate_common_snapshot(rows: Sequence[QuoteRow]) -&gt; None:
+    first = rows[0]
+    checks = [
+        (&quot;as_of_date&quot;, first.as_of_date),
+        (&quot;underlying&quot;, first.underlying),
+        (&quot;spot&quot;, first.spot),
+        (&quot;risk_free_rate&quot;, first.risk_free_rate),
+        (&quot;dividend_yield&quot;, first.dividend_yield),
+    ]
+    for attr, expected in checks:
+        values = {getattr(r, attr) for r in rows}
+        if len(values) != 1:
+            raise ValueError(
+                f&quot;All rows must share one {attr} for a single benchmark run. Found: {sorted(values)}&quot;
+            )
+    option_types = {r.option_type.strip().upper() for r in rows}
+    if len(option_types) &gt; 1:
+        print(
+            &quot;WARNING: mixed CALL/PUT input detected. The script will request AH CallPut calibration &quot;
+            &quot;if the QuantLib binding exposes it; otherwise calibration may fail.&quot;,
+            file=sys.stderr,
+        )
+
+
+def parse_ql_date(s: str) -&gt; ql.Date:
+    dt = datetime.strptime(s, &quot;%Y-%m-%d&quot;).date()
+    return ql.Date(dt.day, dt.month, dt.year)
+
+
+def expiry_to_date(today: ql.Date, calendar, expiry: str) -&gt; ql.Date:
+    exp = expiry.strip()
+    if &quot;-&quot; in exp:
+        return parse_ql_date(exp)
+    return calendar.advance(today, ql.Period(exp))
+
+
+def get_interpolation_type(name: str):
+    return getattr(ql.AndreasenHugeVolatilityInterpl, name)
+
+
+def get_calibration_type(rows: Sequence[QuoteRow]):
+    opts = {r.option_enum for r in rows}
+    if opts == {ql.Option.Call}:
+        return getattr(ql.AndreasenHugeVolatilityInterpl, &quot;Call&quot;)
+    if opts == {ql.Option.Put}:
+        return getattr(ql.AndreasenHugeVolatilityInterpl, &quot;Put&quot;)
+    return getattr(ql.AndreasenHugeVolatilityInterpl, &quot;CallPut&quot;)
+
+
+def build_andreasen_huge(rows: Sequence[QuoteRow], interpolation_name: str, n_grid_points: int):
+    validate_common_snapshot(rows)
+    today = parse_ql_date(rows[0].as_of_date)
+    ql.Settings.instance().evaluationDate = today
+    calendar = ql.NullCalendar()
+    day_counter = ql.Actual365Fixed()
+
+    spot_quote = ql.QuoteHandle(ql.SimpleQuote(rows[0].spot))
+    rates_ts = ql.YieldTermStructureHandle(
+        ql.FlatForward(today, rows[0].risk_free_rate, day_counter)
+    )
+    dividend_ts = ql.YieldTermStructureHandle(
+        ql.FlatForward(today, rows[0].dividend_yield, day_counter)
+    )
+
+    calibration_set = ql.CalibrationSet()
+    for row in rows:
+        payoff = ql.PlainVanillaPayoff(row.option_enum, row.strike)
+        expiry_date = expiry_to_date(today, calendar, row.expiry)
+        exercise = ql.EuropeanExercise(expiry_date)
+        calibration_set.push_back((ql.VanillaOption(payoff, exercise), ql.SimpleQuote(row.implied_vol)))
+
+    interpolation_type = get_interpolation_type(interpolation_name)
+    calibration_type = get_calibration_type(rows)
+    ah = ql.AndreasenHugeVolatilityInterpl(
+        calibration_set,
+        spot_quote,
+        rates_ts,
+        dividend_ts,
+        interpolation_type,
+        calibration_type,
+        n_grid_points,
+    )
+    black_surface = ql.AndreasenHugeVolatilityAdapter(ah)
+    local_surface = ql.AndreasenHugeLocalVolAdapter(ah)
+    return ah, black_surface, local_surface, today, calendar, day_counter
+
+
+def black_vol(surface, expiry_date: ql.Date, strike: float, extrapolate: bool) -&gt; Optional[float]:
+    try:
+        return float(surface.blackVol(expiry_date, strike, extrapolate))
+    except Exception:
+        try:
+            return float(surface.blackVol(expiry_date, strike))
+        except Exception:
+            return None
+
+
+def local_vol(surface, expiry_date: ql.Date, strike: float, extrapolate: bool) -&gt; Optional[float]:
+    try:
+        return float(surface.localVol(expiry_date, strike, extrapolate))
+    except Exception:
+        try:
+            return float(surface.localVol(expiry_date, strike))
+        except Exception:
+            return None
+
+
+def option_price(ah, t: float, strike: float, option_type) -&gt; Optional[float]:
+    try:
+        return float(ah.optionPrice(float(t), float(strike), option_type))
+    except Exception:
+        return None
+
+
+def write_csv(path: str, fieldnames: Sequence[str], rows: Iterable[Dict[str, object]]) -&gt; None:
+    with open(path, &quot;w&quot;, newline=&quot;&quot;, encoding=&quot;utf-8&quot;) as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow(row)
+
+
+def unique_ordered(values: Iterable[object]) -&gt; List[object]:
+    out = []
+    seen = set()
+    for value in values:
+        if value not in seen:
+            seen.add(value)
+            out.append(value)
+    return out
+
+
+def finite_diff_diagnostics(strikes: List[float], call_prices: List[Optional[float]]) -&gt; Dict[str, object]:
+    clean = [(k, c) for k, c in zip(strikes, call_prices) if c is not None and math.isfinite(c)]
+    if len(clean) &lt; 5:
+        return {
+            &quot;status&quot;: &quot;INSUFFICIENT_POINTS&quot;,
+            &quot;min_second_difference&quot;: &quot;&quot;,
+            &quot;negative_convexity_count&quot;: &quot;&quot;,
+            &quot;max_positive_first_difference&quot;: &quot;&quot;,
+        }
+    ks = [x[0] for x in clean]
+    cs = [x[1] for x in clean]
+
+    first_slopes = []
+    for i in range(len(ks) - 1):
+        h = ks[i + 1] - ks[i]
+        if h &gt; 0:
+            first_slopes.append((cs[i + 1] - cs[i]) / h)
+    max_positive_first = max([s for s in first_slopes if s &gt; 0.0], default=0.0)
+
+    second_values = []
+    for i in range(1, len(ks) - 1):
+        h1 = ks[i] - ks[i - 1]
+        h2 = ks[i + 1] - ks[i]
+        if h1 &lt;= 0 or h2 &lt;= 0:
+            continue
+        left_slope = (cs[i] - cs[i - 1]) / h1
+        right_slope = (cs[i + 1] - cs[i]) / h2
+        second = 2.0 * (right_slope - left_slope) / (h1 + h2)
+        second_values.append(second)
+    min_second = min(second_values) if second_values else None
+    neg_count = sum(1 for x in second_values if x &lt; -1e-8)
+    status = &quot;PASS_BASIC_GRID_CHECKS&quot; if max_positive_first &lt;= 1e-8 and neg_count == 0 else &quot;REVIEW&quot;
+    return {
+        &quot;status&quot;: status,
+        &quot;min_second_difference&quot;: &quot;&quot; if min_second is None else f&quot;{min_second:.12g}&quot;,
+        &quot;negative_convexity_count&quot;: neg_count,
+        &quot;max_positive_first_difference&quot;: f&quot;{max_positive_first:.12g}&quot;,
+    }
+
+
+def main() -&gt; int:
+    args = parse_args()
+    rows = read_quotes(args.input)
+    os.makedirs(args.output_dir, exist_ok=True)
+
+    ah, black_surface, local_surface, today, calendar, day_counter = build_andreasen_huge(
+        rows, args.interpolation, args.n_grid_points
+    )
+
+    expiries = unique_ordered(r.expiry for r in rows)
+    if args.grid_strikes.strip():
+        grid_strikes = sorted(float(x.strip()) for x in args.grid_strikes.split(&quot;,&quot;) if x.strip())
+    else:
+        grid_strikes = sorted({r.strike for r in rows})
+
+    quote_fit_rows = []
+    for r in rows:
+        exp_date = expiry_to_date(today, calendar, r.expiry)
+        fitted_vol = black_vol(black_surface, exp_date, r.strike, True)
+        t = day_counter.yearFraction(today, exp_date)
+        px = option_price(ah, t, r.strike, r.option_enum)
+        quote_fit_rows.append(
+            {
+                &quot;as_of_date&quot;: r.as_of_date,
+                &quot;underlying&quot;: r.underlying,
+                &quot;expiry&quot;: r.expiry,
+                &quot;strike&quot;: r.strike,
+                &quot;option_type&quot;: r.option_type,
+                &quot;market_implied_vol&quot;: f&quot;{r.implied_vol:.12g}&quot;,
+                &quot;ah_fitted_implied_vol&quot;: &quot;&quot; if fitted_vol is None else f&quot;{fitted_vol:.12g}&quot;,
+                &quot;abs_vol_error&quot;: &quot;&quot; if fitted_vol is None else f&quot;{abs(fitted_vol - r.implied_vol):.12g}&quot;,
+                &quot;ah_option_price&quot;: &quot;&quot; if px is None else f&quot;{px:.12g}&quot;,
+                &quot;quote_source&quot;: r.quote_source,
+            }
+        )
+
+    write_csv(
+        os.path.join(args.output_dir, &quot;ah_quote_fit.csv&quot;),
+        [
+            &quot;as_of_date&quot;,
+            &quot;underlying&quot;,
+            &quot;expiry&quot;,
+            &quot;strike&quot;,
+            &quot;option_type&quot;,
+            &quot;market_implied_vol&quot;,
+            &quot;ah_fitted_implied_vol&quot;,
+            &quot;abs_vol_error&quot;,
+            &quot;ah_option_price&quot;,
+            &quot;quote_source&quot;,
+        ],
+        quote_fit_rows,
+    )
+
+    surface_rows = []
+    diagnostics_rows = []
+    for expiry in expiries:
+        exp_date = expiry_to_date(today, calendar, expiry)
+        t = day_counter.yearFraction(today, exp_date)
+        call_prices = []
+        for strike in grid_strikes:
+            bv = black_vol(black_surface, exp_date, strike, args.extrapolate)
+            lv = local_vol(local_surface, exp_date, strike, args.extrapolate)
+            cp = option_price(ah, t, strike, ql.Option.Call)
+            call_prices.append(cp)
+            surface_rows.append(
+                {
+                    &quot;as_of_date&quot;: rows[0].as_of_date,
+                    &quot;underlying&quot;: rows[0].underlying,
+                    &quot;expiry&quot;: expiry,
+                    &quot;time_to_expiry&quot;: f&quot;{t:.12g}&quot;,
+                    &quot;strike&quot;: strike,
+                    &quot;ah_black_vol&quot;: &quot;&quot; if bv is None else f&quot;{bv:.12g}&quot;,
+                    &quot;ah_local_vol&quot;: &quot;&quot; if lv is None else f&quot;{lv:.12g}&quot;,
+                    &quot;ah_call_price&quot;: &quot;&quot; if cp is None else f&quot;{cp:.12g}&quot;,
+                }
+            )
+        diag = finite_diff_diagnostics(grid_strikes, call_prices)
+        diagnostics_rows.append(
+            {
+                &quot;as_of_date&quot;: rows[0].as_of_date,
+                &quot;underlying&quot;: rows[0].underlying,
+                &quot;expiry&quot;: expiry,
+                &quot;time_to_expiry&quot;: f&quot;{t:.12g}&quot;,
+                **diag,
+            }
+        )
+
+    write_csv(
+        os.path.join(args.output_dir, &quot;ah_surface_grid.csv&quot;),
+        [
+            &quot;as_of_date&quot;,
+            &quot;underlying&quot;,
+            &quot;expiry&quot;,
+            &quot;time_to_expiry&quot;,
+            &quot;strike&quot;,
+            &quot;ah_black_vol&quot;,
+            &quot;ah_local_vol&quot;,
+            &quot;ah_call_price&quot;,
+        ],
+        surface_rows,
+    )
+    write_csv(
+        os.path.join(args.output_dir, &quot;ah_static_arbitrage_grid_checks.csv&quot;),
+        [
+            &quot;as_of_date&quot;,
+            &quot;underlying&quot;,
+            &quot;expiry&quot;,
+            &quot;time_to_expiry&quot;,
+            &quot;status&quot;,
+            &quot;min_second_difference&quot;,
+            &quot;negative_convexity_count&quot;,
+            &quot;max_positive_first_difference&quot;,
+        ],
+        diagnostics_rows,
+    )
+
+    calibration_error = None
+    try:
+        ce = ah.calibrationError()
+        calibration_error = [float(x) for x in ce]
+    except Exception as exc:
+        calibration_error = f&quot;calibrationError() unavailable: {exc}&quot;
+
+    summary = {
+        &quot;input_file&quot;: os.path.abspath(args.input),
+        &quot;output_dir&quot;: os.path.abspath(args.output_dir),
+        &quot;as_of_date&quot;: rows[0].as_of_date,
+        &quot;underlying&quot;: rows[0].underlying,
+        &quot;spot&quot;: rows[0].spot,
+        &quot;risk_free_rate&quot;: rows[0].risk_free_rate,
+        &quot;dividend_yield&quot;: rows[0].dividend_yield,
+        &quot;quote_count&quot;: len(rows),
+        &quot;expiry_count&quot;: len(expiries),
+        &quot;strike_count_output_grid&quot;: len(grid_strikes),
+        &quot;interpolation&quot;: args.interpolation,
+        &quot;n_grid_points&quot;: args.n_grid_points,
+        &quot;calibration_error_tuple_if_exposed_by_quantlib&quot;: calibration_error,
+        &quot;diagnostic_files&quot;: [
+            &quot;ah_quote_fit.csv&quot;,
+            &quot;ah_surface_grid.csv&quot;,
+            &quot;ah_static_arbitrage_grid_checks.csv&quot;,
+        ],
+        &quot;validation_note&quot;: (
+            &quot;PiecewiseConstant is the default in this script because polynomial/spline interpolation of &quot;
+            &quot;Andreasen-Huge prices can reintroduce convexity issues between nodes. Review output against &quot;
+            &quot;bid/ask tolerances and production SVI-JWK results; this benchmark is diagnostic, not a replacement model.&quot;
+        ),
+    }
+    with open(os.path.join(args.output_dir, &quot;ah_benchmark_summary.json&quot;), &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+        json.dump(summary, f, indent=2)
+
+    print(json.dumps(summary, indent=2))
+    return 0
+
+
+if __name__ == &quot;__main__&quot;:
+    raise SystemExit(main())
+</code></pre>
+<div class="file-title" id="csv"><h2>Sample input CSV</h2><span class="badge">sample_ah_option_quotes.csv</span></div><p class="meta">Copy the block below into a file named <span class="inline-code">sample_ah_option_quotes.csv</span>.</p><pre><code class="language-csv">as_of_date,underlying,spot,risk_free_rate,dividend_yield,expiry,strike,option_type,implied_vol,quote_source
+2026-04-24,SAMPLE_EQ,100,0.02,0.05,3M,95,CALL,0.110,QuantLib-Python-docs-style-synthetic
+2026-04-24,SAMPLE_EQ,100,0.02,0.05,3M,97.5,CALL,0.105,QuantLib-Python-docs-style-synthetic
+2026-04-24,SAMPLE_EQ,100,0.02,0.05,3M,100,CALL,0.100,QuantLib-Python-docs-style-synthetic
+2026-04-24,SAMPLE_EQ,100,0.02,0.05,3M,102.5,CALL,0.095,QuantLib-Python-docs-style-synthetic
+2026-04-24,SAMPLE_EQ,100,0.02,0.05,3M,105,CALL,0.095,QuantLib-Python-docs-style-synthetic
+2026-04-24,SAMPLE_EQ,100,0.02,0.05,6M,90,CALL,0.120,QuantLib-Python-docs-style-synthetic
+2026-04-24,SAMPLE_EQ,100,0.02,0.05,6M,95,CALL,0.110,QuantLib-Python-docs-style-synthetic
+2026-04-24,SAMPLE_EQ,100,0.02,0.05,6M,100,CALL,0.105,QuantLib-Python-docs-style-synthetic
+2026-04-24,SAMPLE_EQ,100,0.02,0.05,6M,105,CALL,0.100,QuantLib-Python-docs-style-synthetic
+2026-04-24,SAMPLE_EQ,100,0.02,0.05,6M,110,CALL,0.105,QuantLib-Python-docs-style-synthetic
+2026-04-24,SAMPLE_EQ,100,0.02,0.05,1Y,80,CALL,0.120,QuantLib-Python-docs-style-synthetic
+2026-04-24,SAMPLE_EQ,100,0.02,0.05,1Y,90,CALL,0.115,QuantLib-Python-docs-style-synthetic
+2026-04-24,SAMPLE_EQ,100,0.02,0.05,1Y,100,CALL,0.110,QuantLib-Python-docs-style-synthetic
+2026-04-24,SAMPLE_EQ,100,0.02,0.05,1Y,110,CALL,0.110,QuantLib-Python-docs-style-synthetic
+2026-04-24,SAMPLE_EQ,100,0.02,0.05,1Y,120,CALL,0.115,QuantLib-Python-docs-style-synthetic
+</code></pre>
+<div class="file-title" id="readme"><h2>README / run instructions</h2><span class="badge">README_andreasen_huge_benchmark.md</span></div><p class="meta">Copy the block below into a file named <span class="inline-code">README_andreasen_huge_benchmark.md</span>.</p><pre><code class="language-markdown"># Andreasen-Huge Independent Benchmark Test
+
+## Installation
+
+```bash
+pip install QuantLib-Python
+```
+
+## Run with the sample input
+
+```bash
+python andreasen_huge_benchmark_test.py \
+  --input sample_ah_option_quotes.csv \
+  --output-dir ah_benchmark_output \
+  --interpolation PiecewiseConstant
+```
+
+## Expected outputs
+
+- `ah_quote_fit.csv`: quote-level fitted AH implied vol and option price.
+- `ah_surface_grid.csv`: output grid with AH black vol, local vol, and call price.
+- `ah_static_arbitrage_grid_checks.csv`: basic grid-level monotonicity/convexity diagnostics.
+- `ah_benchmark_summary.json`: run metadata and calibration summary.
+
+## Input conventions
+
+- `implied_vol` must be decimal, e.g. `0.20` for 20%.
+- The sample uses the same compact synthetic quote grid shown in the QuantLib-Python Andreasen-Huge documentation.
+- For production validation, replace the sample rows with the Model Owner&#x27;s market quotes, rates, dividends/borrow and source flags.
+
+## Validation caveat
+
+This benchmark is intended to independently challenge the SVI-JWK surface construction. It is not, by itself, proof that Andreasen-Huge should replace SVI-JWK in production.
+</code></pre>
+<div class="footer">Prepared for junior developer handoff. Keep this file with the executable Python script, sample CSV, and README to preserve reproducibility of the benchmark implementation package.</div></main></body></html>
