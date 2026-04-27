@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SVI-JWK Boundary-Conditioned Arbitrage Test — Test Design, v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true
+    },
+    options: { renderActions: { addMenu: [] } }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+  :root {
+    --bg: #f5f1e8;
+    --bg-card: #fbf8f1;
+    --ink: #1a2332;
+    --ink-soft: #42506a;
+    --ink-muted: #6e7685;
+    --rule: #d4cdb8;
+    --rule-strong: #8a7f66;
+    --accent: #2a4158;
+    --accent-soft: #617b99;
+    --warn: #9c4221;
+    --warn-bg: #f4e9df;
+    --finding: #5d3a1a;
+    --finding-bg: #efe4d0;
+    --insight: #1f3a2d;
+    --insight-bg: #e0e6d8;
+    --code-bg: #eae4d2;
+    --code-text: #1a2332;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; }
+  body {
+    font-family: "Fraunces", "EB Garamond", Georgia, serif;
+    font-optical-sizing: auto;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.62;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(138, 127, 102, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 85% 70%, rgba(42, 65, 88, 0.03) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 80px 48px 120px;
+    position: relative;
+    z-index: 1;
+  }
+  .masthead {
+    border-top: 3px solid var(--ink);
+    border-bottom: 1px solid var(--rule-strong);
+    padding: 18px 0 22px;
+    margin-bottom: 56px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+  }
+  .masthead-left { display: flex; flex-direction: column; gap: 2px; }
+  .masthead .kicker {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-muted);
+    font-weight: 500;
+  }
+  .masthead .doc-id {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.7rem;
+    color: var(--ink-muted);
+    letter-spacing: 0.04em;
+  }
+  .masthead-right {
+    text-align: right;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.7rem;
+    color: var(--ink-muted);
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+  }
+  .title-block { margin-bottom: 56px; }
+  h1 {
+    font-family: "Fraunces", serif;
+    font-weight: 350;
+    font-style: italic;
+    font-size: 3rem;
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 16px;
+    font-variation-settings: "opsz" 144, "SOFT" 50;
+  }
+  h1 em { font-style: normal; font-weight: 450; }
+  .subtitle {
+    font-size: 1.12rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    font-weight: 400;
+    max-width: 700px;
+    font-style: italic;
+  }
+  .byline {
+    margin-top: 20px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+  }
+  .exec-summary {
+    background: var(--bg-card);
+    border-left: 3px solid var(--accent);
+    padding: 28px 32px;
+    margin-bottom: 56px;
+    font-size: 1.02rem;
+    color: var(--ink-soft);
+  }
+  .exec-summary .label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .exec-summary p { margin-bottom: 12px; }
+  .exec-summary p:last-child { margin-bottom: 0; }
+  section { margin-bottom: 64px; }
+  h2 {
+    font-family: "Fraunces", serif;
+    font-weight: 450;
+    font-size: 1.85rem;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    font-variation-settings: "opsz" 72;
+  }
+  .section-number {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--rule-strong);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .section-divider {
+    height: 1px;
+    background: var(--rule);
+    margin: 4px 0 28px;
+  }
+  h3 {
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: 1.22rem;
+    color: var(--ink);
+    margin-top: 32px;
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+  h4 {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    font-weight: 600;
+    margin-top: 24px;
+    margin-bottom: 10px;
+  }
+  p {
+    margin-bottom: 16px;
+    font-size: 1.02rem;
+    color: var(--ink);
+  }
+  strong { font-weight: 600; color: var(--ink); }
+  em { font-style: italic; }
+  .mono {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    padding: 1px 6px;
+    border-radius: 2px;
+    color: var(--code-text);
+  }
+  .math-block {
+    margin: 20px 0 20px 20px;
+    padding: 16px 22px;
+    background: var(--bg-card);
+    border-left: 2px solid var(--rule-strong);
+    font-size: 1rem;
+    overflow-x: auto;
+  }
+  .math-block .eq-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.68rem;
+    color: var(--ink-muted);
+    float: right;
+    margin-top: 6px;
+    letter-spacing: 0.04em;
+  }
+  .table-wrap { margin: 24px 0 28px; overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+  }
+  table caption {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-muted);
+    text-align: left;
+    padding-bottom: 10px;
+    font-weight: 500;
+  }
+  th {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    text-align: left;
+    padding: 10px 14px 10px 0;
+    color: var(--ink);
+    border-bottom: 1px solid var(--rule-strong);
+  }
+  td {
+    padding: 10px 14px 10px 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  tr:last-child td { border-bottom: none; }
+  td.param {
+    font-family: "JetBrains Mono", monospace;
+    color: var(--accent);
+    white-space: nowrap;
+    font-size: 0.88rem;
+  }
+  .callout {
+    margin: 24px 0;
+    padding: 20px 26px;
+    border-radius: 2px;
+  }
+  .callout .label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .callout.finding { background: var(--finding-bg); border-left: 3px solid var(--finding); }
+  .callout.finding .label { color: var(--finding); }
+  .callout.warning { background: var(--warn-bg); border-left: 3px solid var(--warn); }
+  .callout.warning .label { color: var(--warn); }
+  .callout.insight { background: var(--insight-bg); border-left: 3px solid var(--insight); }
+  .callout.insight .label { color: var(--insight); }
+  .callout p:last-child { margin-bottom: 0; }
+  ul, ol { margin: 12px 0 20px 22px; padding-left: 12px; }
+  li {
+    margin-bottom: 8px;
+    padding-left: 4px;
+    font-size: 1.02rem;
+    color: var(--ink);
+    line-height: 1.58;
+  }
+  pre {
+    margin: 20px 0;
+    padding: 20px 24px;
+    background: #f0ead7;
+    border-left: 2px solid var(--accent);
+    border-radius: 2px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--code-text);
+    overflow-x: auto;
+  }
+  pre code { font-family: inherit; background: transparent; padding: 0; color: inherit; }
+  .references {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 2px solid var(--ink);
+  }
+  .references h2 { font-size: 1.35rem; margin-bottom: 18px; }
+  .references ol { list-style: none; counter-reset: ref; margin-left: 0; padding-left: 0; }
+  .references li {
+    counter-increment: ref;
+    font-size: 0.9rem;
+    padding-left: 40px;
+    position: relative;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+  }
+  .references li::before {
+    content: "[" counter(ref) "]";
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.76rem;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .changelog {
+    margin-top: 32px;
+    padding: 20px 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+  }
+  .changelog h4 { margin-top: 0; }
+  .changelog ol { margin-top: 10px; }
+  .changelog li { font-size: 0.94rem; }
+  .foot {
+    margin-top: 42px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-muted);
+    text-align: center;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .page > * { animation: fadeUp 0.5s ease-out backwards; }
+  .masthead { animation-delay: 0s; }
+  .title-block { animation-delay: 0.08s; }
+  .exec-summary { animation-delay: 0.16s; }
+  section { animation-delay: 0.24s; }
+  @media (max-width: 700px) {
+    html { font-size: 15px; }
+    .page { padding: 48px 22px 80px; }
+    h1 { font-size: 2.15rem; }
+    .masthead { flex-direction: column; align-items: flex-start; }
+    .masthead-right { text-align: left; }
+  }
+  @media print {
+    body { background: white; }
+    body::before { display: none; }
+    .page { max-width: 100%; padding: 0; }
+    .page > * { animation: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="title-block">
+    <h1>SVI-JWK <em>Boundary-Conditioned Arbitrage Transition</em> Test</h1>
+    <p class="subtitle">Test design specification — v2 — revised after internal code review of the v1 skeleton. Addresses the Head of MV's challenge that the existing §5.5 and §5.8 boundary tests do not link boundary proximity to arbitrage outcomes.</p>
+    <div class="byline">Prepared for document_2 File · Pre-Read</div>
+  </div>
+
+  <div class="exec-summary">
+    <div class="label">Executive summary</div>
+    <p>The existing boundary tests in document_1 §5.5 and document_2 §5.8 inspect how the smile shape <em>looks</em> when an SVI-JWK parameter is at or near its algebraic boundary. The Head of Validation's challenge is that this does not answer the validator's core question: <strong>at what distance from the calibrated mark does the first static-arbitrage violation appear, and along which parameter direction?</strong> This document specifies a test design — the Boundary-to-Arbitrage Transition (BAT) test — that answers this question directly, using the Durrleman $g$-function as the primary butterfly primitive and a monotonicity check on total implied variance for the calendar dimension.</p>
+    <p>Version 3 incorporates review corrections (changed for clarity): a non-raising parameter classification so the walker can evaluate surfaces up to the algebraic boundary and record outside-domain points as admissibility breaches; an explicit SVI-JWK → raw-SVI converter (document_1 eqs 4.10–4.15) with a post-rescaling $\kappa_t$ rescaling flag; the analytical Durrleman $g$-function as the primary butterfly metric alongside a numerical Breeden–Litzenberger cross-check; a calendar-spread check across tenors; an explicit materiality-thresholds structure that must be populated before the walker can produce pass/fail output; corrected beta-zero JWK inversion handling; explicit sigma-zero kink diagnostics; and an intermediate-tenor JWK interpolation helper for calendar testing (changed for clarity).</p>
+    <p class="mono" style="background: transparent; padding: 0; font-size: 0.9rem;">Scope excludes probability-of-occurrence and materiality-unit quantification (deferred, per validation team direction).</p>
+  </div>
+
+  <section>
+    <div class="section-number">§ 01 — Why the prior boundary test is incomplete</div>
+    <h2>From smile inspection to arbitrage transition</h2>
+    <div class="section-divider"></div>
+
+    <p>The document_1 §5.5 and document_2 §5.8 boundary tests push each SVI-JWK parameter to its analytical limit one at a time and report what the smile looks like. Both reach the same qualitative finding — the put wing or call wing jumps up when $\psi_t$ or the wing-slope parameters hit their boundary — and both close with a monitoring recommendation rather than a measurement. Three questions that the existing tests do not answer:</p>
+
+    <ol>
+      <li>whether a near-boundary or past-boundary parameter vector produces a static-arbitrage violation that could be exploited by a calendar or butterfly spread;</li>
+      <li>which direction in parameter space produces the <em>first</em> material arbitrage and how far the current calibrated marks sit from that failure;</li>
+      <li>whether the algebraic boundary of the SVI-JWK parameter space coincides with the arbitrage-free boundary — or whether the two differ, as Gatheral-Jacquier (2014) Theorem 4.2 suggests.</li>
+    </ol>
+
+    <p>The proposed test is therefore not another generic butterfly or calendar check: it is a <strong>boundary-conditioned arbitrage transition test</strong> that links parameter-boundary proximity directly to surface-level arbitrage outcomes.</p>
+  </section>
+
+  <section>
+    <div class="section-number">§ 02 — Recommended test structure</div>
+    <h2>The Boundary-to-Arbitrage Transition (BAT) test</h2>
+    <div class="section-divider"></div>
+
+    <p>The test has three components. Each answers a distinct question and each is supported by closed-form or transparent numerical primitives in the companion Python module.</p>
+
+    <div class="table-wrap">
+      <table>
+        <caption>Table 1 · BAT test components</caption>
+        <thead>
+          <tr>
+            <th style="width: 26%">Component</th>
+            <th style="width: 36%">Question answered</th>
+            <th>Why it is not duplicative of existing §5.11 or §5.18 tests</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Boundary classification</strong></td>
+            <td>Is the parameter vector inside, at, or past the algebraic admissibility region?</td>
+            <td>The existing validate-and-raise pattern cannot distinguish the three cases; the classifier returns a structured diagnostic.</td>
+          </tr>
+          <tr>
+            <td><strong>First-arbitrage transition</strong></td>
+            <td>Along a chosen parameter direction, at what shock magnitude does the first material arbitrage appear?</td>
+            <td>The existing arbitrage checks evaluate pass/fail at the calibrated mark. This test measures the distance to failure.</td>
+          </tr>
+          <tr>
+            <td><strong>Calendar-spread check</strong></td>
+            <td>Does $w(k,T)$ remain monotonic in $T$ across the full dense moneyness grid, including between calibrated tenors?</td>
+            <td>The existing check evaluates calendar non-arbitrage only at calibrated tenors; this extends to the full grid the MC pricer traverses.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-number">§ 03 — Mathematical set-up</div>
+    <h2>Primitives and boundary conditions</h2>
+    <div class="section-divider"></div>
+
+    <h3>3.1 · Raw SVI total variance</h3>
+
+    <p>For log-moneyness $k = \log(K/F)$, the raw-SVI total variance is</p>
+
+    <div class="math-block">
+      $$w(k) = a + b\left\{\rho(k - m) + \sqrt{(k - m)^2 + \sigma^2}\right\}$$
+    </div>
+
+    <p>with algebraic admissibility region</p>
+
+    <div class="math-block">
+      $$b \geq 0, \qquad |\rho| \leq 1, \qquad \sigma \geq 0, \qquad a + b\sigma\sqrt{1 - \rho^2} \geq 0.$$
+    </div>
+
+    <p>Note the inequalities are non-strict — this matters for the boundary-transition test, which must be able to evaluate surfaces at $|\rho| = 1$ and $\sigma = 0$ (the $\psi_t$-boundary collapse case).</p>
+
+    <h3>3.2 · SVI-JWK → raw-SVI inversion</h3>
+
+    <p>document_1 equations (4.10)–(4.15) define the inversion. The key quantities are</p>
+
+    <div class="math-block">
+      $$b = \frac{\sqrt{w_t}}{2}(c_t + p_t), \qquad \rho = \frac{c_t - p_t}{c_t + p_t}, \qquad \beta = \frac{c_t - p_t - 4\psi_t}{c_t + p_t}$$
+    </div>
+
+    <div class="math-block">
+      $$\gamma = \frac{\sqrt{w_t}\,(c_t + p_t)}{4\left(2\sqrt{w_t}\,\kappa_t^{\text{raw}} + \psi_t^2\right)}, \qquad m = \beta(1 - \beta^2)\gamma, \qquad \sigma = \frac{\sqrt{1 - \beta^2}}{\beta}\,m$$
+    </div>
+
+    <p>with $w_t = \nu_t \cdot T$ and $a = w_t - b\{-\rho m + \sqrt{m^2 + \sigma^2}\}$. The $\kappa_t$ input to the inversion must be in the <em>pre-rescaling</em> convention — the post-rescaling HyokaPara storage convention takes $\kappa_t^{\text{stored}} = \kappa_t^{\text{raw}} / \sqrt{T}$, so when consuming that storage the converter must multiply by $\sqrt{T}$ before using $\gamma$. The companion Python module exposes this via a <span class="mono">kappa_rescaled</span> flag on <span class="mono">svi_jwk_to_raw_svi(…)</span>.</p>
+
+    <p>At $|\beta| = 1$ the inversion is degenerate: $m \to 0$, $\sigma \to 0$, $a \to w_t$. The converter handles this limit explicitly rather than producing <span class="mono">NaN</span>.</p>
+
+    <h3>3.3 · Boundary-distance metrics on SVI-JWK parameters</h3>
+
+    <p>The classification uses the original validation-document boundary table with directional distance metrics:</p>
+
+    <div class="table-wrap">
+      <table>
+        <caption>Table 2 · Boundary conditions and distance metrics</caption>
+        <thead>
+          <tr>
+            <th style="width: 30%">Boundary condition</th>
+            <th style="width: 40%">Distance metric</th>
+            <th>Breach flag</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>$\nu_t \geq 0$</td>
+            <td>$d_\nu = \nu_t$</td>
+            <td>$d_\nu < 0$</td>
+          </tr>
+          <tr>
+            <td>$\kappa_t \geq 0$</td>
+            <td>$d_\kappa = \kappa_t$</td>
+            <td>$d_\kappa < 0$</td>
+          </tr>
+          <tr>
+            <td>$\psi_t \geq -p_t/2$</td>
+            <td>$d_{\psi, L} = \psi_t + p_t/2$</td>
+            <td>$d_{\psi, L} < 0$</td>
+          </tr>
+          <tr>
+            <td>$\psi_t \leq c_t/2$</td>
+            <td>$d_{\psi, R} = c_t/2 - \psi_t$</td>
+            <td>$d_{\psi, R} < 0$</td>
+          </tr>
+          <tr>
+            <td>Put-wing lower bound from document_2 §5.8 Table</td>
+            <td>$d_p = p_t - 2\psi_t$ if $\psi_t > 0$; $d_p = p_t + 2\psi_t$ if $\psi_t \leq 0$</td>
+            <td>$d_p < 0$</td>
+          </tr>
+          <tr>
+            <td>$c_t \geq 0$</td>
+            <td>$d_c = c_t$</td>
+            <td>$d_c < 0$</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>3.4 · Butterfly non-arbitrage: analytical Durrleman $g$-function</h3>
+
+    <p>For any raw-SVI slice, the Durrleman function</p>
+
+    <div class="math-block">
+      $$g(k) = \left(1 - \frac{k\,w'(k)}{2\,w(k)}\right)^2 - \frac{w'(k)^2}{4}\left(\frac{1}{w(k)} + \frac{1}{4}\right) + \frac{w''(k)}{2}$$
+    </div>
+
+    <p>is the standard analytical butterfly-arbitrage diagnostic under the usual smoothness, positive-total-variance and option-price boundary assumptions; non-negativity over the full log-moneyness domain is used as the regulator-grade condition for the implemented slice test (changed for clarity). For raw SVI the derivatives are closed-form:</p>
+
+    <div class="math-block">
+      $$w'(k) = b\rho + \frac{b(k - m)}{\sqrt{(k - m)^2 + \sigma^2}}, \qquad w''(k) = \frac{b\sigma^2}{\big((k - m)^2 + \sigma^2\big)^{3/2}}$$
+    </div>
+
+    <p>The companion module uses these closed forms as the primary butterfly primitive. A numerical Breeden-Litzenberger density computed by finite difference on the call-price surface is retained as an independent cross-check — they should agree on sign everywhere.</p>
+
+    <div class="callout insight">
+      <span class="label">Why the analytical g is the primary metric</span>
+      <p>Numerical $\partial^2 C / \partial K^2$ on an irregular strike grid is $O(h^2)$ accurate in the interior and $O(h)$ at the edges. A density that dips narrowly below zero across a few strikes can be smoothed away by finite differences, producing false negatives. The analytical $g$-function is therefore the primary metric for smooth positive-total-variance slices. At non-smooth boundary cases such as $\sigma=0$ exactly at $k=m$, the implementation flags undefined kink points rather than silently treating the slice as regular. For regulator-grade work, the analytical metric is the one the acceptance criterion should reference, with numerical density retained as a diagnostic cross-check (changed for clarity).</p>
+    </div>
+
+    <h3>3.5 · Lee wing-slope bound</h3>
+
+    <p>The asymptotic slopes of $w(k)$ as $|k| \to \infty$ are $b(1+\rho)$ on the right and $b(1-\rho)$ on the left. Roger Lee's (2004) moment formula requires both to lie in $[0, 2]$. A slope approaching 2 corresponds to an extreme-tail limiting case in which finite moments above the first may fail to exist; it should not be described as the risk-neutral first moment itself ceasing to exist under the standard forward-price no-arbitrage set-up (changed for clarity). This condition is an <em>external</em> constraint on the SVI parameter space — a parameter vector can be algebraically admissible yet violate Lee's bound at long tenors — and is evaluated alongside the Durrleman $g$-function in the slice metrics.</p>
+
+    <h3>3.6 · Calendar-spread non-arbitrage</h3>
+
+    <p>For a surface, the calendar-spread non-arbitrage condition is $\partial w(k, T)/\partial T \geq 0$ for every $k$. Both existing validations check this only at calibrated tenors — neither tests whether the condition holds <em>between</em> calibrated tenors under FO's non-standard $\sqrt{\nu_t}$ interpolation (document_2 §5.18.2). The BAT calendar component evaluates monotonicity of $w(k, T)$ on a dense $(k, T)$ grid that includes at least 10 interpolation points between every adjacent calibrated tenor pair.</p>
+  </section>
+
+  <section>
+    <div class="section-number">§ 04 — Surface-output arbitrage metrics</div>
+    <h2>What the test measures on each shocked slice</h2>
+    <div class="section-divider"></div>
+
+    <p>For each (shocked) parameter vector along a transition path, the module computes the following metrics on a dense moneyness grid (default 401 strikes, minimum 50):</p>
+
+    <div class="table-wrap">
+      <table>
+        <caption>Table 3 · Arbitrage metrics computed per slice</caption>
+        <thead>
+          <tr>
+            <th style="width: 32%">Metric</th>
+            <th style="width: 28%">Condition for non-arbitrage</th>
+            <th>Interpretation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Analytical Durrleman $g$</td>
+            <td>$\min_k g(k) \geq 0$</td>
+            <td>Primary butterfly primitive (closed form)</td>
+          </tr>
+          <tr>
+            <td>Numerical BL density</td>
+            <td>$\partial^2 C / \partial K^2 \geq 0$</td>
+            <td>Diagnostic finite-difference cross-check; expected to broadly agree with analytical $g$ on well-resolved interior grid regions, but not a pointwise acceptance criterion (changed for clarity)</td>
+          </tr>
+          <tr>
+            <td>Call-price monotonicity</td>
+            <td>$\partial C / \partial K \leq 0$</td>
+            <td>Vertical spread non-arbitrage</td>
+          </tr>
+          <tr>
+            <td>Call-price lower slope</td>
+            <td>$\partial C / \partial K \geq -\text{df}$</td>
+            <td>Upper bound on vertical spread payoff</td>
+          </tr>
+          <tr>
+            <td>Lee wing bounds</td>
+            <td>$b(1 \pm \rho) \leq 2$</td>
+            <td>Lee asymptotic wing-slope compliance; extreme-tail moment sanity check (changed for clarity)</td>
+          </tr>
+          <tr>
+            <td>Calendar decrement</td>
+            <td>$w(k, T_{i+1}) \geq w(k, T_i)$ for adjacent tenors</td>
+            <td>Calendar-spread non-arbitrage on the dense grid</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Breeden-Litzenberger density is obtained from</p>
+
+    <div class="math-block">
+      $$q(K, T) = \frac{1}{\text{df}} \cdot \frac{\partial^2 C(K, T)}{\partial K^2}$$
+    </div>
+
+    <p>where <span class="mono">df</span> is the risk-free discount factor $e^{-rT}$. Dividend treatment is folded into the forward $F$ before the call pricer is invoked.</p>
+  </section>
+
+  <section>
+    <div class="section-number">§ 05 — Boundary-to-arbitrage transition design</div>
+    <h2>The shock walker</h2>
+    <div class="section-divider"></div>
+
+    <ol>
+      <li>Start from the production raw-SVI or SVI-JWK parameter vector for a given underlying and maturity. If SVI-JWK, convert to raw SVI using the inversion with the correct $\kappa_t$ rescaling flag.</li>
+      <li>Classify the starting point as regular, at-algebraic-boundary, or outside-admissible-region. If outside, the validator must flag this as a finding before the walker runs.</li>
+      <li>Choose a shock direction $\mathbf{d}$ in raw-SVI parameter space (a five-vector of perturbations $\Delta a, \Delta b, \Delta \rho, \Delta m, \Delta \sigma$). For a validator-grade sweep, include at minimum: $\rho \to \pm 1$, $\sigma \to 0$, and the $\psi_t$-boundary equivalent direction expressed in raw-SVI parameters.</li>
+      <li>Generate an $\alpha$-grid of shock magnitudes from 0 (base case) through $\alpha_{\max}$ (the point that reaches or passes the boundary).</li>
+      <li>For each $\alpha$, compute the shocked parameter vector and classify it. If the vector is outside the algebraic admissibility region, record this as the first admissibility breach and do not assume downstream surface metrics are meaningful. If the vector is regular or exactly at a permitted algebraic boundary, compute the slice metrics (changed for clarity).</li>
+      <li>Apply the pre-approved <em>materiality thresholds</em> to each metric. The first $\alpha$ at which any threshold is exceeded is the first-breach alpha $\alpha^*$.</li>
+      <li>Report $\alpha^*$, the breaching metric(s), the log-moneyness at which the breach was worst, and the distance from the calibrated mark to the shocked parameter vector in a chosen norm.</li>
+    </ol>
+
+    <div class="callout warning">
+      <span class="label">Materiality thresholds must be approved ex-ante</span>
+      <p>The walker requires a <span class="mono">MaterialityThresholds</span> object. If one is not supplied, the module returns results using floating-point-noise floors and flags the output with <span class="mono">thresholds_were_defaulted=True</span>. Results flagged this way should not be used for production sign-off — they are diagnostic only. The validation team must specify thresholds in writing (magnitude of $\min_k g$, integrated negative density, Lee-bound buffer, call-price monotonicity and slope tolerances) before the walker is used for regulator submission.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-number">§ 06 — Tolerance approach</div>
+    <h2>Acceptance thresholds</h2>
+    <div class="section-divider"></div>
+
+    <p>No universal numerical tolerance applies to all equity volatility surfaces. Thresholds must be pre-approved and referenced to numerical precision, bid-ask spread, strike spacing, option tick size, and portfolio materiality. The module does not enforce defaults; it forces the caller to supply them via <span class="mono">MaterialityThresholds</span>.</p>
+
+    <div class="table-wrap">
+      <table>
+        <caption>Table 4 · Tolerance principles by check</caption>
+        <thead>
+          <tr>
+            <th style="width: 30%">Check</th>
+            <th>Recommended tolerance principle</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Analytical Durrleman $g$</td>
+            <td>Theoretical strict inequality $g \geq 0$; material breach at $\min_k g < -\tau_g$ with $\tau_g$ expressing negligible density mass given the surface scale.</td>
+          </tr>
+          <tr>
+            <td>Numerical BL density</td>
+            <td>Do not flag isolated single-strike noise. Require persistent adjacent negative nodes or integrated negative mass above approved threshold.</td>
+          </tr>
+          <tr>
+            <td>Lee wing slope</td>
+            <td>Hard theoretical bound at 2. Numerical buffer permitted only for rounding; any buffer must be explicit and approved.</td>
+          </tr>
+          <tr>
+            <td>Call-price monotonicity / lower slope</td>
+            <td>Reference to bid-ask spread and discount-factor / forward consistency. Breaches of the order of the bid-ask mid should be material.</td>
+          </tr>
+          <tr>
+            <td>Calendar decrement</td>
+            <td>Floating-point floor only. Any persistent negative decrement is a real calendar-spread arbitrage signal.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-number">§ 07 — Python implementation</div>
+    <h2>Module and test suite</h2>
+    <div class="section-divider"></div>
+
+    <p>The companion Python module <span class="mono">svi_boundary_arbitrage_checks_v2.py</span> implements the primitives described above. The corresponding test suite <span class="mono">test_svi_boundary_arbitrage_checks.py</span> exercises all components on known-good and known-bad fixtures.</p>
+
+    <h3>7.1 · Module contents</h3>
+    <ul>
+      <li><span class="mono">RawSVIParams</span>, <span class="mono">SVIJWKParams</span>, <span class="mono">SliceInputs</span>, <span class="mono">MaterialityThresholds</span> — typed dataclasses for inputs.</li>
+      <li><span class="mono">classify_raw_svi_params</span> — non-raising structured classification (regular / at-algebraic-boundary / outside-admissible-region).</li>
+      <li><span class="mono">svi_jwk_to_raw_svi</span> — document_1 (4.10)–(4.15) inversion with <span class="mono">kappa_rescaled</span> flag.</li>
+      <li><span class="mono">raw_svi_total_variance_derivs</span>, <span class="mono">durrleman_g_analytical</span> — closed-form total variance, first and second derivatives, and $g$-function.</li>
+      <li><span class="mono">black_call_from_total_variance</span> — Black-76 pricer with explicit risk-free discount convention.</li>
+      <li><span class="mono">raw_svi_slice_arbitrage_metrics</span> — per-slice diagnostic combining analytical $g$, numerical BL density, call monotonicity, lower-slope and Lee wing checks.</li>
+      <li><span class="mono">interpolate_jwk_slices_for_calendar_check</span> — generates intermediate-tenor raw-SVI slices from JWK marks using the stated ATM-volatility and parameter interpolation convention (changed for clarity).</li>
+      <li><span class="mono">calendar_arbitrage_check</span> — $w(k, T)$ monotonicity on the supplied dense tenor and moneyness grid across adjacent tenors.</li>
+      <li><span class="mono">first_detectable_breach_alpha</span> — shock walker requiring <span class="mono">MaterialityThresholds</span>, reporting whether thresholds were defaulted.</li>
+    </ul>
+
+    <h3>7.2 · Quick-start example</h3>
+
+<pre><code>import numpy as np
+from svi_boundary_arbitrage_checks_v2 import (
+    RawSVIParams, SVIJWKParams, SliceInputs, MaterialityThresholds,
+    svi_jwk_to_raw_svi, raw_svi_slice_arbitrage_metrics,
+    first_detectable_breach_alpha,
+)
+
+# 1. Convert production SVI-JWK marks to raw SVI
+jwk = SVIJWKParams(nu_t=0.04, psi_t=-0.05, kappa_t=0.10, p_t=0.40, c_t=0.30)
+params = svi_jwk_to_raw_svi(jwk, maturity=5.0, kappa_rescaled=True)
+
+# 2. Define slice inputs (dense strike grid)
+inputs = SliceInputs(
+    strikes=np.linspace(60.0, 160.0, 401),
+    forward=100.0, discount_factor=0.95, maturity=5.0,
+)
+
+# 3. Compute baseline slice metrics
+metrics = raw_svi_slice_arbitrage_metrics(inputs, params)
+print("Analytical min g =", metrics["min_g_analytical"])
+
+# 4. Walk toward the rho = 1 boundary and find the first arbitrage
+direction = RawSVIParams(a=0.0, b=0.0, rho=1.0, m=0.0, sigma=0.0)
+alpha_grid = np.linspace(0.05, 1.8, 40)
+thresholds = MaterialityThresholds(
+    min_density_magnitude=1e-4,
+    min_integrated_negative_density=1e-4,
+    max_monotonicity_breach=1e-6,
+    max_lower_slope_breach=1e-6,
+    lee_bound_buffer=0.0,
+)
+result = first_detectable_breach_alpha(
+    inputs, params, direction, alpha_grid, thresholds=thresholds,
+)
+print("First-breach alpha =", result["first_breach_alpha"])
+print("Breach reasons     =", result["breach_reasons"])
+</code></pre>
+
+    <h3>7.3 · Test coverage</h3>
+    <p>The enhanced test suite includes additional tests covering the beta-zero JWK conversion limit, sigma-zero kink diagnostics, and intermediate-tenor JWK interpolation, in addition to the earlier tests covering: classification at interior, at-boundary and past-boundary parameter vectors; SVI-JWK → raw-SVI round-trip at boundary and interior, with and without the $\kappa_t$ rescaling flag; Black-76 put-call parity and zero-variance intrinsic value; Durrleman $g$-function positivity on healthy surfaces, ability to go negative on adversarial surfaces, and sign agreement with the numerical density; calendar check pass on monotone surfaces and failure on inverted tenor order; shock walker reaching the algebraic boundary cleanly and reporting thresholds-were-defaulted when none are supplied; numpy 1.x / 2.x compatibility; and Lee moment bound activation.</p>
+
+    <div class="changelog">
+      <h4>Changelog — v2 from v1</h4>
+      <ol>
+        <li><strong>Non-raising classification.</strong> The v1 <span class="mono">validate_raw_svi_params</span> raised <span class="mono">ValueError</span> on any domain infraction. This prevented the shock walker from evaluating surfaces at or past the algebraic boundary — exactly the cases the test is designed to probe. Replaced with <span class="mono">classify_raw_svi_params</span> returning a structured diagnostic.</li>
+        <li><strong>SVI-JWK → raw-SVI converter.</strong> Added <span class="mono">svi_jwk_to_raw_svi</span> implementing document_1 (4.10)–(4.15) with explicit <span class="mono">kappa_rescaled</span> flag for the post-rescaling HyokaPara convention, and an explicit $|\beta| = 1$ limit branch.</li>
+        <li><strong>Analytical Durrleman $g$.</strong> Added <span class="mono">durrleman_g_analytical</span> using closed-form $w'(k), w''(k)$ for raw SVI. Numerical BL density retained as independent cross-check; they must agree on sign.</li>
+        <li><strong>Calendar check.</strong> Added <span class="mono">calendar_arbitrage_check</span> to close the v1 methodology–code gap on the calendar dimension. Evaluates on a dense $(k, T)$ grid rather than at calibrated tenors only.</li>
+        <li><strong>numpy compatibility.</strong> Added <span class="mono">np.trapezoid</span> / <span class="mono">np.trapz</span> shim at module import to support numpy 1.x corporate environments.</li>
+        <li><strong>Materiality thresholds required.</strong> Shock walker renamed from <span class="mono">first_material_breach_alpha</span> to <span class="mono">first_detectable_breach_alpha</span> and accepts an optional <span class="mono">MaterialityThresholds</span> object. If none supplied, result is flagged with <span class="mono">thresholds_were_defaulted=True</span> and must not be used for sign-off.</li>
+        <li><strong>Default strike grid raised.</strong> <span class="mono">prepare_strikes</span> default minimum raised from 5 to 50 with a <span class="mono">UserWarning</span> below that level; hard minimum at 5 retained for unit testing.</li>
+        <li><strong>Black-76 docstring clarified.</strong> <span class="mono">discount_factor</span> is explicitly the risk-free $e^{-rT}$, with dividends folded into the forward $F$ upstream.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-number">§ 08 — Required inputs from the model developer</div>
+    <h2>Data request to 1LoD</h2>
+    <div class="section-divider"></div>
+
+    <div class="table-wrap">
+      <table>
+        <caption>Table 5 · Input files for the BAT test</caption>
+        <thead>
+          <tr>
+            <th style="width: 30%">File</th>
+            <th style="width: 40%">Minimum fields</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mono">raw_svi_parameters.csv</span></td>
+            <td>valuation_date, underlying_id, maturity_date, T, a, b, rho, m, sigma, calibration_status</td>
+            <td>Primary input for raw-SVI metrics, Lee bounds, analytical $g$.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">svi_jwk_parameters.csv</span></td>
+            <td>valuation_date, underlying_id, maturity_date, T, nu_t, psi_t, kappa_t, p_t, c_t, kappa_convention</td>
+            <td>Boundary-distance calculation and reconciliation against the raw-SVI file via the converter. The <span class="mono">kappa_convention</span> field must be <span class="mono">PRE_RESCALING_RAW</span> or <span class="mono">POST_RESCALING</span>.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">market_inputs.csv</span></td>
+            <td>valuation_date, underlying_id, spot, forward, discount_factor, dividend_yield_or_curve, borrow_curve</td>
+            <td>Forward / risk-free discount for Black-76 pricer.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">option_quotes.csv</span></td>
+            <td>valuation_date, underlying_id, maturity_date, strike, option_type, bid_iv, ask_iv, mid_iv, bid_price, ask_price, mid_price</td>
+            <td>Strike grid and bid-ask-referenced materiality.</td>
+          </tr>
+          <tr>
+            <td><span class="mono">quote_filter_log.csv</span></td>
+            <td>valuation_date, underlying_id, maturity, strike, exclusion_flag, exclusion_reason</td>
+            <td>Explains sparse long-tenor surfaces and quote filtering effects.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>In addition, the validation team must provide <em>in writing</em>, before the walker is run for regulator submission, a <span class="mono">MaterialityThresholds</span> object with approved values for each of its five fields.</p>
+  </section>
+
+  <section>
+    <div class="section-number">§ 09 — Suggested validation conclusion</div>
+    <h2>What the BAT test delivers to document_2</h2>
+    <div class="section-divider"></div>
+
+    <p>The Boundary-to-Arbitrage Transition test extends the previous boundary analysis from qualitative smile-shape inspection to quantitative measurement of boundary-induced static-arbitrage risk. For each calibrated slice, the test produces:</p>
+
+    <ul>
+      <li>a classification of the parameter vector against the algebraic admissibility boundary;</li>
+      <li>a shock-magnitude $\alpha^*$ at which the first material arbitrage appears along each tested direction — interpretable as a distance to failure in parameter space;</li>
+      <li>a Durrleman $g$-surface showing where in moneyness the first arbitrage emerges;</li>
+      <li>a calendar-spread decrement table across adjacent tenors on a dense grid, including intermediate tenors generated under the documented front-office interpolation convention, because arbitrage between calibrated grid points may not be visible at the calibrator tenors alone (changed for clarity);</li>
+      <li>a Lee moment-formula compliance statement for each slice's wing slopes.</li>
+    </ul>
+
+    <p>This is particularly relevant for long-dated index and single-stock surfaces ($T \geq 5$ years), where sparse strike information, extrapolated wings, and the Iijima → SVI-JWK injection for Japanese stocks can make boundary behaviour economically material. The test output is designed to be directly usable as a Finding or Action Plan input in document_2, with pre-stated acceptance criteria rather than retrospective qualitative judgment.</p>
+  </section>
+
+  <div class="references">
+    <h2>References</h2>
+    <ol>
+      <li>Gatheral, J. &amp; Jacquier, A. (2014). "Arbitrage-free SVI volatility surfaces." <em>Quantitative Finance</em> 14(1), 59–71. Theorem 4.2 and Corollary 4.3. Cited as ref [6] in document_2 and [2] in document_1.</li>
+      <li>Gatheral, J. (2006). <em>The Volatility Surface: A Practitioner's Guide.</em> Wiley Finance. Chapter 2 (Dupire, $g$-function form), Chapter 3 (SVI and arbitrage).</li>
+      <li>Lee, R. W. (2004). "The moment formula for implied volatility at extreme strikes." <em>Mathematical Finance</em> 14(3), 469–480.</li>
+      <li>Durrleman, V. (2010). "From implied to spot volatilities." <em>Finance and Stochastics</em> 14(2), 157–177. Origin of the $g$-function butterfly primitive.</li>
+      <li>Roper, M. (2010). "Arbitrage free implied volatility surfaces." Preprint, University of New South Wales. Theorem 2.9 — necessary and almost-sufficient static arbitrage conditions.</li>
+      <li>Ferhati, T. (2020). "Robust calibration for SVI model: arbitrage free." Cited as ref [3] in document_1 and [9] in document_2.</li>
+      <li>Breeden, D. T. &amp; Litzenberger, R. H. (1978). "Prices of state-contingent claims implicit in option prices." <em>Journal of Business</em> 51(4), 621–651.</li>
+      <li>Dupire, B. (1994). "Pricing with a smile." <em>Risk</em> 7(1), 18–20.</li>
+      <li>Board of Governors of the Federal Reserve System / OCC (2011). SR 11-7 / OCC Bulletin 2011-12, <em>Supervisory Guidance on Model Risk Management.</em></li>
+      <li>Financial Services Agency (Japan) (2021). <em>Principles for Model Risk Management</em> (モデル・リスク管理に関する原則).</li>
+    </ol>
+  </div>
+
+  <div class="foot">End of test design v2 · SVI-JWK · BAT · document_2</div>
+
+
+  <section>
+    <div class="section-number">§ 10 — Review corrections incorporated</div>
+    <h2>Corrections made after validator review</h2>
+    <div class="section-divider"></div>
+    <ul>
+      <li>Lee moment wording has been tightened so the slope-2 bound is not incorrectly described as loss of the first risk-neutral moment (changed for clarity).</li>
+      <li>The Durrleman $g$-function statement is now qualified by smoothness, positive-total-variance and option-price boundary assumptions (changed for clarity).</li>
+      <li>The shock-walker design now records outside-domain shocked vectors as admissibility breaches instead of claiming that full surface metrics are meaningful outside the admissible region (changed for clarity).</li>
+      <li>The implementation now explicitly handles the $\beta \to 0$ JWK-to-raw-SVI limit as $m \to 0$ and $\sigma \to \gamma$, rather than treating it as a $\sigma \to 0$ collapse (changed for clarity).</li>
+      <li>The implementation now reports undefined $g$ points at the $\sigma=0$, $k=m$ kink instead of silently treating the non-smooth point as regular (changed for clarity).</li>
+      <li>A JWK intermediate-tenor interpolation helper has been added so calendar checks can be performed on generated intermediate slices rather than only on supplied calibrated tenors (changed for clarity).</li>
+    </ul>
+  </section>
+</div>
+</body>
+</html>

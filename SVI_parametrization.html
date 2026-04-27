@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>SVI-JWK Conceptual Soundness — Two Theoretical Validation Tests</title>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+  :root {
+    --paper: #f6f2e9;
+    --card: #ffffff;
+    --ink: #172033;
+    --muted: #5f6878;
+    --rule: #d8d1c2;
+    --accent: #1b4d3e;
+    --accent2: #8a4b16;
+    --warn: #8f2d20;
+    --warn-bg: #fff4ef;
+    --good: #1f6b45;
+    --good-bg: #eef8f1;
+    --blue-bg: #eef4fb;
+    --code: #172033;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Segoe UI", Arial, sans-serif;
+    line-height: 1.62;
+    font-size: 16px;
+  }
+
+  .page {
+    max-width: 1080px;
+    margin: 0 auto;
+    background: var(--card);
+    padding: 48px 56px 86px;
+    min-height: 100vh;
+    box-shadow: 0 18px 60px rgba(0,0,0,0.07);
+  }
+
+  header {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 26px;
+    margin-bottom: 36px;
+  }
+
+  .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: 34px;
+    line-height: 1.14;
+    margin: 0 0 12px;
+    color: var(--ink);
+  }
+
+  .subtitle {
+    color: var(--muted);
+    max-width: 820px;
+    font-size: 17px;
+  }
+
+  h2 {
+    margin-top: 42px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+    font-size: 25px;
+    color: var(--ink);
+  }
+
+  h3 {
+    margin-top: 28px;
+    font-size: 19px;
+    color: var(--accent);
+  }
+
+  h4 {
+    margin-top: 22px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 13px;
+    color: var(--accent2);
+  }
+
+  p { max-width: 88ch; }
+
+  .box {
+    border-left: 5px solid var(--accent);
+    background: var(--blue-bg);
+    padding: 16px 20px;
+    border-radius: 6px;
+    margin: 20px 0;
+  }
+
+  .warn {
+    border-left-color: var(--warn);
+    background: var(--warn-bg);
+  }
+
+  .good {
+    border-left-color: var(--good);
+    background: var(--good-bg);
+  }
+
+  .small {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .toc {
+    background: #f9fafb;
+    border: 1px solid var(--rule);
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin: 26px 0;
+  }
+
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0 26px;
+    font-size: 14px;
+  }
+
+  th, td {
+    border: 1px solid var(--rule);
+    padding: 11px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    background: #f3f4f6;
+    color: var(--ink);
+  }
+
+  .math-block {
+    background: #faf7ee;
+    border: 1px solid var(--rule);
+    padding: 14px 18px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 18px 0;
+  }
+
+  code {
+    font-family: Consolas, "JetBrains Mono", monospace;
+    background: #f1eee5;
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .test-card {
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    margin: 34px 0;
+    overflow: hidden;
+  }
+
+  .test-head {
+    background: var(--accent);
+    color: white;
+    padding: 20px 24px;
+  }
+
+  .test-head h2 {
+    color: white;
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  .test-head .label {
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 11px;
+    opacity: 0.75;
+    margin-bottom: 8px;
+  }
+
+  .test-body {
+    padding: 24px;
+  }
+
+  .criteria {
+    background: #fbfbfb;
+  }
+
+  .references {
+    margin-top: 46px;
+    border-top: 2px solid var(--ink);
+    padding-top: 20px;
+  }
+
+  .references li {
+    margin-bottom: 10px;
+  }
+
+  .masked-note {
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid var(--rule);
+    margin-top: 36px;
+    padding-top: 16px;
+  }
+
+  @media print {
+    body { background: white; }
+    .page { box-shadow: none; padding: 24px; max-width: none; }
+  }
+</style>
+</head>
+<body>
+<main class="page">
+<header>
+
+<h1>Two Additional Theoretical Tests for an SVI-JWK Volatility Surface Model</h1>
+<p class="subtitle">
+    This note reframes the additional validation work from an SR 11-7 conceptual-soundness perspective. The focus is on the model's mathematical design, assumptions, parameterisation, and intended-use logic — not on implementation reconciliation or data-quality controls.
+  </p>
+</header>
+<div class="toc">
+<strong>Contents</strong>
+<ol>
+<li><a href="#sr117">What conceptual soundness means under SR 11-7</a></li>
+<li><a href="#prior">What the prior validation work already covered</a></li>
+<li><a href="#selection">Why these two tests were selected</a></li>
+<li><a href="#test1">Test 1 — JWK-to-raw-SVI parameterisation integrity</a></li>
+<li><a href="#test2">Test 2 — Surface-level calendar construction and interpolation preservation</a></li>
+<li><a href="#junior">Junior-validator execution guidance</a></li>
+<li><a href="#refs">References</a></li>
+</ol>
+</div>
+<section id="sr117">
+<h2>1. What conceptual soundness means under SR 11-7</h2>
+<p>
+SR 11-7 separates validation into three broad activities: conceptual soundness, ongoing monitoring, and outcomes analysis. In that framework, <strong>conceptual soundness</strong> is primarily concerned with the model's design, theory, logic, assumptions, limitations, and intended use. It asks whether the model is theoretically appropriate before asking whether it has been implemented correctly.
+</p>
+<div class="box">
+<strong>Working definition for this validation.</strong><br/>
+  A conceptual soundness test should challenge the mathematical representation of the model itself. For an SVI-JWK volatility surface model, the relevant questions are:
+  <ul>
+<li>Is JWK truly a safe and well-defined reparameterisation of raw SVI across the intended domain?</li>
+<li>Does the method used to turn single-maturity SVI slices into a full surface preserve the no-arbitrage property required by theory?</li>
+<li>Are the model assumptions sufficient for the intended use, or are additional restrictions required?</li>
+</ul>
+</div>
+<p>
+This distinction matters. Put-call parity checks, input-forward checks, production-grid finite differences, and regression-to-system outputs are useful validation controls, but they are not the purest form of conceptual soundness. They are better classified as data integrity, implementation verification, numerical diagnostics, or ongoing monitoring. The two tests proposed below are deliberately theoretical: they challenge the model design itself.
+</p>
+</section>
+<section id="prior">
+<h2>2. What the prior validation work already covered</h2>
+<p>
+The prior validation papers already covered several important areas. They assessed calibration quality, smile behaviour under parameter movement, boundary behaviour, smoothness, stress scenarios, sensitivity/P&amp;L explainability, numerical stability, benchmark comparisons, and static-arbitrage diagnostics.
+</p>
+<table>
+<thead>
+<tr>
+<th>Area already covered in prior validation papers</th>
+<th>Why it is useful</th>
+<th>Why it does not fully answer the conceptual question</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Calibration and market fit tests</td>
+<td>Show whether the model can fit observed option quotes or benchmark surfaces.</td>
+<td>A model can fit well and still have an unstable or ill-defined parameterisation.</td>
+</tr>
+<tr>
+<td>Boundary behaviour / smile-shape inspection</td>
+<td>Shows what happens visually when individual parameters approach stated limits.</td>
+<td>Visual smile inspection does not prove that the JWK domain maps cleanly into the raw-SVI admissible domain, nor does it fully characterise singular cases.</td>
+</tr>
+<tr>
+<td>Butterfly and calendar arbitrage checks at selected grids</td>
+<td>Detect static-arbitrage failures in fitted or official surfaces.</td>
+<td>These are output diagnostics. They do not by themselves prove that the model construction preserves no-arbitrage theoretically across the continuous surface.</td>
+</tr>
+<tr>
+<td>Stress tests and numerical stability tests</td>
+<td>Assess robustness under shocked or perturbed conditions.</td>
+<td>They are important, but they do not replace a formal check of the model's mathematical assumptions.</td>
+</tr>
+<tr>
+<td>Independent benchmark analysis</td>
+<td>Provides effective challenge against another modelling approach.</td>
+<td>A benchmark can show relative fit quality, but it does not prove that SVI-JWK itself is internally well-posed.</td>
+</tr>
+</tbody>
+</table>
+<div class="warn box">
+<strong>Residual gap.</strong><br/>
+  The remaining conceptual gap is not “do more generic arbitrage checks.” The deeper gap is whether the theoretical construction of the model — JWK as a reparameterisation of raw SVI, and single-slice SVI as a full maturity surface — is mathematically safe for its intended use.
+</div>
+</section>
+<section id="selection">
+<h2>3. Why these two tests were selected</h2>
+<p>
+Only two tests are recommended because the aim is to select the highest-value theoretical challenges that are not simply repetitions of calibration, stress, fit, or static-arbitrage output checks.
+</p>
+<table>
+<thead>
+<tr>
+<th>Selected test</th>
+<th>Why this is a conceptual soundness test</th>
+<th>Why it is different from prior validation work</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Test 1: JWK-to-raw-SVI parameterisation integrity</strong></td>
+<td>Challenges the foundational claim that SVI-JWK is a safe trader-friendly reparameterisation of raw SVI.</td>
+<td>Prior boundary tests inspect smile behaviour near parameter limits. This test formally checks mapping integrity, admissible-domain equivalence, and singular/degenerate cases.</td>
+</tr>
+<tr>
+<td><strong>Test 2: Surface-level calendar construction and interpolation preservation</strong></td>
+<td>Challenges whether the model is conceptually valid as a full volatility surface, not merely as independent maturity slices.</td>
+<td>Prior arbitrage tests check selected calibrated or official surfaces. This test asks whether the interpolation rule has a theoretical no-calendar-arbitrage guarantee between tenors.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<div class="test-card" id="test1">
+<div class="test-head">
+<div class="label">Test 1 · Theoretical parameterisation test</div>
+<h2>JWK-to-Raw-SVI Parameterisation Integrity and Admissible-Domain Equivalence</h2>
+</div>
+<div class="test-body">
+<h3>1.1 Test objective</h3>
+<p>
+      The objective is to validate the theoretical claim that SVI-JWK is a well-defined and economically meaningful reparameterisation of raw SVI. The test should demonstrate where the transformation is bijective, where it is only conditionally valid, and where it becomes singular, degenerate, or ill-conditioned.
+    </p>
+<h3>1.2 Model theory being tested</h3>
+<p>
+      Raw SVI represents the total implied variance slice as:
+    </p>
+<div class="math-block">
+      $$w(k) = a + b\left\{\rho(k-m) + \sqrt{(k-m)^2+\sigma^2}\right\}.$$
+    </div>
+<p>
+      The raw-SVI admissible region requires, at minimum:
+    </p>
+<div class="math-block">
+      $$b \ge 0,\qquad |\rho| \le 1,\qquad \sigma \ge 0,\qquad
+      a + b\sigma\sqrt{1-\rho^2} \ge 0.$$
+    </div>
+<p>
+      SVI-JWK stores a different five-parameter representation:
+    </p>
+<div class="math-block">
+      $$(\nu_t,\psi_t,\kappa_t,p_t,c_t).$$
+    </div>
+<p>
+      The conceptual question is whether the JWK parameters, under their stated constraints, map to raw-SVI parameters satisfying the raw admissibility requirements and whether the inverse mapping remains stable across the intended model domain.
+    </p>
+<h3>1.3 What the validator should do</h3>
+<ol>
+<li><strong>Document the transformation.</strong> Write down the forward and inverse mapping between raw SVI and SVI-JWK, including all maturity-scaling conventions.</li>
+<li><strong>Classify the mathematical domain.</strong> Identify interior points, boundary points, and singular points such as $\beta=0$, $|\beta|=1$, $\sigma=0$, and near-zero denominators in the transformation.</li>
+<li><strong>Check admissibility equivalence.</strong> For a controlled grid of JWK parameters, transform to raw SVI and verify the raw admissibility conditions above.</li>
+<li><strong>Check round-trip stability.</strong> For regular-domain points, verify that JWK → raw SVI → JWK recovers the original parameters within a documented tolerance.</li>
+<li><strong>Check boundary behaviour analytically.</strong> Do not rely only on plots. For boundary cases, derive the limiting form of $a,b,\rho,m,\sigma$ and document whether the limit is unique and economically meaningful.</li>
+<li><strong>Define exclusions if needed.</strong> If certain JWK regions are not valid in theory, the validation should explicitly state that they are outside the model domain rather than treating them as implementation exceptions.</li>
+</ol>
+<h3>1.4 Why this is not covered by prior boundary testing</h3>
+<p>
+      Prior boundary testing inspected how the smile looked when individual parameters were pushed toward their stated limits. That is useful, but it is qualitative. It does not fully answer the mathematical question: “Does every admissible JWK parameter vector map into an admissible raw-SVI slice, and are the singular cases handled consistently with the model's theory?”
+    </p>
+<table class="criteria">
+<thead>
+<tr>
+<th>Prior boundary test</th>
+<th>This conceptual test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Move parameters to limits and inspect smile shape.</td>
+<td>Prove or numerically demonstrate mapping validity across the theoretical domain.</td>
+</tr>
+<tr>
+<td>Focus on visual reasonableness.</td>
+<td>Focus on admissible-domain equivalence and singularity classification.</td>
+</tr>
+<tr>
+<td>May conclude “no peculiar behaviour” except near specified boundaries.</td>
+<td>Must explicitly classify where the transformation is regular, degenerate, singular, or outside domain.</td>
+</tr>
+</tbody>
+</table>
+<h3>1.5 Suggested pass/fail criteria</h3>
+<table>
+<thead>
+<tr>
+<th>Outcome</th>
+<th>Criterion</th>
+<th>Validation implication</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pass</td>
+<td>All regular-domain JWK points transform into raw-SVI parameters satisfying raw admissibility, and round-trip error is within tolerance.</td>
+<td>The reparameterisation is conceptually sound over the tested domain.</td>
+</tr>
+<tr>
+<td>Amber</td>
+<td>The mapping is valid only after excluding or specially handling identified boundary/singular cases.</td>
+<td>The model can be used if the domain restrictions are formally documented and monitored.</td>
+</tr>
+<tr>
+<td>Fail</td>
+<td>Admissible-looking JWK points map to invalid raw SVI, or the mapping is unstable in economically relevant regions.</td>
+<td>The model design has a conceptual weakness, not merely an implementation issue.</td>
+</tr>
+</tbody>
+</table>
+<h3>1.6 Real-world example for a junior validator</h3>
+<p>
+      Suppose a trader marks a very steep downside skew. The JWK parameters may still appear to satisfy their individual parameter bounds. But after transformation, the raw-SVI parameter $\sigma$ may approach zero, $\rho$ may approach a limiting value, or the denominator in the inverse transformation may become very small. The resulting slice may look visually plausible around ATM but become theoretically fragile in the wings. This test identifies that fragility at the parameterisation level before it appears as an unexplained arbitrage or unstable Greek.
+    </p>
+</div>
+</div>
+<div class="test-card" id="test2">
+<div class="test-head">
+<div class="label">Test 2 · Theoretical surface-construction test</div>
+<h2>Surface-Level Calendar Construction and Interpolation Preservation Test</h2>
+</div>
+<div class="test-body">
+<h3>2.1 Test objective</h3>
+<p>
+      The objective is to validate whether the method used to convert separate SVI-JWK maturity slices into a full volatility surface preserves calendar-spread no-arbitrage. A model can be valid slice by slice and still fail as a surface if the interpolation rule creates decreasing total variance between tenors.
+    </p>
+<h3>2.2 Model theory being tested</h3>
+<p>
+      For European calls, absence of calendar-spread arbitrage requires call prices to be non-decreasing in maturity. In total-variance language, a standard necessary condition for a volatility surface is:
+    </p>
+<div class="math-block">
+      $$\partial_T w(k,T) \ge 0 \quad \text{for all log-moneyness } k.$$
+    </div>
+<p>
+      Raw SVI and SVI-JWK define a slice at a fixed maturity. They do not, by themselves, define how slices must be connected through time. Therefore, the maturity interpolation rule is part of the model's conceptual design.
+    </p>
+<h3>2.3 What the validator should do</h3>
+<ol>
+<li><strong>Document the exact interpolation rule.</strong> Identify whether interpolation is applied to total variance, volatility, square-root variance, raw parameters, JWK parameters, or prices.</li>
+<li><strong>State the theoretical requirement.</strong> The interpolation must preserve $w(k,T_2) \ge w(k,T_1)$ for all $k$ whenever $T_2&gt;T_1$.</li>
+<li><strong>Attempt a proof.</strong> If the interpolation is claimed to be arbitrage-preserving, write the proof or cite a standard result that proves preservation.</li>
+<li><strong>Construct counterexamples.</strong> If no proof exists, build synthetic pairs of individually valid SVI-JWK slices and test whether the interpolated surface violates $\partial_T w(k,T)\ge 0$ between tenors.</li>
+<li><strong>Compare interpolation choices.</strong> Compare the production interpolation rule with alternatives known to be more naturally aligned with no-arbitrage, such as interpolation in call prices or total variance under suitable conditions.</li>
+<li><strong>Define model limitations.</strong> If the chosen interpolation is not theoretically arbitrage-preserving, document this as a model limitation and require monitoring across dense intermediate maturities.</li>
+</ol>
+<h3>2.4 Why this is not covered by prior arbitrage testing</h3>
+<p>
+      Prior validation work checked arbitrage at selected tenors or on selected official surfaces. That is not the same as proving that the maturity-interpolation rule is theoretically safe. The surface can pass at all calibrated pillars and fail at a maturity between two pillars.
+    </p>
+<table class="criteria">
+<thead>
+<tr>
+<th>Prior arbitrage checks</th>
+<th>This conceptual test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Evaluate selected fitted or official maturity slices.</td>
+<td>Challenge the theoretical rule used to connect slices through maturity.</td>
+</tr>
+<tr>
+<td>Detect whether arbitrage exists at tested grid points.</td>
+<td>Ask whether the interpolation method preserves no-arbitrage by construction.</td>
+</tr>
+<tr>
+<td>Useful for monitoring and outcome diagnostics.</td>
+<td>Directly tests the conceptual completeness of the model as a full surface.</td>
+</tr>
+</tbody>
+</table>
+<h3>2.5 Suggested pass/fail criteria</h3>
+<table>
+<thead>
+<tr>
+<th>Outcome</th>
+<th>Criterion</th>
+<th>Validation implication</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pass</td>
+<td>The interpolation rule is either theoretically proven to preserve calendar no-arbitrage or no counterexample is found across a broad, documented stress domain.</td>
+<td>The surface construction is conceptually supportable.</td>
+</tr>
+<tr>
+<td>Amber</td>
+<td>No proof exists, but violations are limited to remote wings or outside product-relevant regions and are controlled through monitoring.</td>
+<td>The model can be used with documented limitation and monitoring.</td>
+</tr>
+<tr>
+<td>Fail</td>
+<td>Valid input slices generate material between-tenor calendar arbitrage under the interpolation rule.</td>
+<td>The surface-construction assumption is conceptually weak and requires remediation or formal limitation.</td>
+</tr>
+</tbody>
+</table>
+<h3>2.6 Real-world example for a junior validator</h3>
+<p>
+      Imagine the 1-year and 2-year SVI-JWK slices are both individually free of butterfly arbitrage and pass all pillar-level checks. If the model interpolates the parameters directly, the interpolated 18-month slice may nevertheless have lower total variance than the 1-year slice at deep put moneyness. A trader pricing an 18-month structured payoff would then consume a surface with calendar arbitrage even though both surrounding pillars looked acceptable. This is a conceptual weakness in the surface construction rule, not simply a coding defect.
+    </p>
+</div>
+</div>
+<section id="junior">
+<h2>4. Junior-validator execution guidance</h2>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>What to ask for</th>
+<th>What to produce</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>The exact mathematical specification of the JWK-to-raw and raw-to-JWK transformations, including maturity scaling conventions.</td>
+<td>A parameterisation-domain memo showing regular, boundary, singular, and excluded regions.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>A representative parameter grid covering ordinary, stressed, and near-boundary SVI-JWK values.</td>
+<td>A round-trip and admissibility test table for Test 1.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>The exact maturity interpolation rule used by the model.</td>
+<td>A theoretical assessment of whether the rule preserves $w(k,T)$ monotonicity.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Pairs of valid SVI-JWK slices across adjacent maturities, including stressed examples.</td>
+<td>A counterexample search showing whether valid pillars can create invalid between-pillar surfaces.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Product-relevant moneyness and tenor ranges.</td>
+<td>A judgement on whether any conceptual weakness is remote, product-relevant, or material.</td>
+</tr>
+</tbody>
+</table>
+<div class="good box">
+<strong>Reviewer expectation.</strong><br/>
+  The junior validator should not present these as “Python checks” only. The deliverable should first explain the theorem, assumption, or missing guarantee. Code can be used to demonstrate the issue, but the conceptual-soundness conclusion should be written at the model-design level.
+</div>
+</section>
+<section class="references" id="refs">
+<h2>5. References</h2>
+<ol>
+<li>Board of Governors of the Federal Reserve System and Office of the Comptroller of the Currency. <em>Supervisory Guidance on Model Risk Management</em>, SR 11-7 / OCC 2011-12, 2011. Conceptual soundness is discussed as part of validation, with emphasis on model design, theory, logic, assumptions, and intended use.</li>
+<li>Gatheral, J. <em>The Volatility Surface: A Practitioner’s Guide</em>. Wiley Finance, 2006. Standard reference for implied total variance, SVI, static arbitrage, and the role of total variance in volatility surface construction.</li>
+<li>Gatheral, J. and Jacquier, A. “Arbitrage-free SVI volatility surfaces.” <em>Quantitative Finance</em>, 14(1), 59–71, 2014. Standard paper on SVI and SSVI no-arbitrage conditions across slices and surfaces.</li>
+<li>Lee, R. W. “The Moment Formula for Implied Volatility at Extreme Strikes.” <em>Mathematical Finance</em>, 14(3), 469–480, 2004. Standard result linking implied-total-variance wing behaviour to distributional tail moments.</li>
+<li>Dupire, B. “Pricing with a Smile.” <em>Risk</em>, 1994. Foundational local-volatility paper showing the role of strike and maturity derivatives of option prices.</li>
+<li>Roper, M. “Arbitrage Free Implied Volatility Surfaces.” Working paper, 2010. Useful theoretical reference for full-surface no-arbitrage conditions.</li>
+</ol>
+
+</section>
+</main>
+</body>
+</html>

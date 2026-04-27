@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sanity Check Gap Assessment — SVI-JWK document_2</title>
+<style>
+    :root {
+      --bg: #f7f8fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #5b6472;
+      --line: #d8dee9;
+      --accent: #1f4e79;
+      --accent-soft: #e8f1fa;
+      --warn: #8a5a00;
+      --warn-soft: #fff6df;
+      --bad: #8b1e1e;
+      --bad-soft: #fdecec;
+      --good: #1f6f43;
+      --good-soft: #e8f7ee;
+      --code: #f3f5f7;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.55;
+      font-size: 15px;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 32px auto;
+      padding: 0 24px 48px;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #ffffff, #eef5fb);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 28px 32px;
+      box-shadow: 0 8px 24px rgba(31, 78, 121, 0.08);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.2;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    h2 {
+      margin: 34px 0 14px;
+      color: var(--accent);
+      font-size: 22px;
+      border-bottom: 2px solid var(--accent-soft);
+      padding-bottom: 8px;
+    }
+
+    h3 {
+      margin: 22px 0 8px;
+      color: #243447;
+      font-size: 18px;
+    }
+
+    p { margin: 10px 0; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 22px 24px;
+      margin-top: 18px;
+      box-shadow: 0 5px 18px rgba(30, 41, 59, 0.05);
+    }
+
+    .callout {
+      border-left: 5px solid var(--accent);
+      background: var(--accent-soft);
+      padding: 14px 16px;
+      margin: 16px 0;
+      border-radius: 8px;
+    }
+
+    .risk-callout {
+      border-left: 5px solid var(--bad);
+      background: var(--bad-soft);
+      padding: 14px 16px;
+      margin: 16px 0;
+      border-radius: 8px;
+    }
+
+    .enhancement-callout {
+      border-left: 5px solid var(--warn);
+      background: var(--warn-soft);
+      padding: 14px 16px;
+      margin: 16px 0;
+      border-radius: 8px;
+    }
+
+    .accept-callout {
+      border-left: 5px solid var(--good);
+      background: var(--good-soft);
+      padding: 14px 16px;
+      margin: 16px 0;
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--line);
+      padding: 12px 14px;
+    }
+
+    th {
+      background: #edf3f8;
+      color: #1f3f5b;
+      font-weight: 700;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .tag {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .tag.formal { background: var(--bad-soft); color: var(--bad); }
+    .tag.enhancement { background: var(--warn-soft); color: var(--warn); }
+    .tag.control { background: var(--good-soft); color: var(--good); }
+
+    .math {
+      font-family: "Times New Roman", Times, serif;
+      background: var(--code);
+      padding: 10px 12px;
+      border-radius: 8px;
+      overflow-x: auto;
+      border: 1px solid #e4e7eb;
+      margin: 10px 0;
+    }
+
+    ul { margin-top: 8px; }
+    li { margin: 6px 0; }
+
+    .small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .section-label {
+      color: var(--muted);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .footer {
+      margin-top: 30px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media print {
+      body { background: white; }
+      .page { margin: 0; max-width: none; padding: 18mm; }
+      .card, .header { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+<main class="page">
+<section class="header">
+<h1>Sanity Check Gap Assessment — SVI-JWK document_2</h1>
+<p class="subtitle">Assessment of whether the Sanity Check section provides sufficient evidence of model behaviour, parameter interpretation, and implementation consistency.</p>
+</section>
+<section class="card">
+<div class="section-label">Executive Summary</div>
+<p>
+        The Sanity Check is useful as a first-order directional control because it verifies that the volatility smile broadly moves in the expected direction when SVI-JWK parameters are perturbed. However, the test is not sufficient as a standalone validation control because it relies mainly on visual inspection, does not define numerical pass/fail thresholds, and does not fully evidence the parameter transformation chain that is central to the model change.
+      </p>
+<p>
+        The most material gaps are the absence of quantitative acceptance criteria, insufficient testing of parameter cross-effects between the put and call wings, no explicit ATM anchor verification, single-date testing, and no dedicated test of the post-rescaling kurtosis-definition change across maturities. The Iijima baseline comparison is better treated as an enhancement point because comparison work is performed later in the calibration analysis, although including it earlier would have improved validation flow.
+      </p>
+<div class="callout">
+<strong>Overall assessment:</strong> The Sanity Check should be retained, but its conclusion should be qualified. It supports broad directional plausibility, not full implementation correctness or robust arbitrage-control readiness.
+      </div>
+</section>
+<h2>1. Classification of Proposed Gaps</h2>
+<table>
+<thead>
+<tr>
+<th style="width: 30%;">Observation</th>
+<th style="width: 18%;">Classification</th>
+<th>Validation View</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No quantitative acceptance criterion</td>
+<td><span class="tag formal">Formal gap</span></td>
+<td>Correct. Visual and directional checks are useful but insufficient without numerical thresholds for expected parameter response.</td>
+</tr>
+<tr>
+<td>Call wing shows dependency on put-wing slope</td>
+<td><span class="tag formal">Formal gap</span></td>
+<td>Correct, but should be phrased carefully. Some coupling is structurally expected through the SVI-JWK to raw-SVI transformation, so the issue is not that the model is necessarily wrong, but that the cross-effect should have been quantified and controlled.</td>
+</tr>
+<tr>
+<td>No explicit ATM strike verification</td>
+<td><span class="tag formal">Formal gap</span></td>
+<td>Correct. The ATM anchor and ATM invariance properties should be tested analytically and numerically.</td>
+</tr>
+<tr>
+<td>Single market date tested</td>
+<td><span class="tag formal">Formal gap</span></td>
+<td>Correct. A single date limits the conclusion to one market regime and does not demonstrate robustness across volatility environments.</td>
+</tr>
+<tr>
+<td>No explicit test of the κ<sub>t</sub> redefinition impact</td>
+<td><span class="tag formal">Formal gap</span></td>
+<td>Correct and material. This directly relates to the definitional change and the long-maturity concern.</td>
+</tr>
+<tr>
+<td>No comparison against Iijima baseline in Sanity Check</td>
+<td><span class="tag enhancement">Enhancement</span></td>
+<td>Reasonable as a sequencing point, but not a standalone deficiency because the comparison is addressed later in calibration analysis.</td>
+</tr>
+<tr>
+<td>SoftBank/9984 long-dated sensitivity anomaly not fully evidenced</td>
+<td><span class="tag formal">Formal gap</span></td>
+<td>Correct, but should be expressed as reduced sensitivity requiring numerical evidence, rather than as a conclusion that the model does not respond.</td>
+</tr>
+</tbody>
+</table>
+<h2>2. Detailed Gap Assessment</h2>
+<section class="card">
+<h3>Gap 1 — No Quantitative Acceptance Criterion</h3>
+<p>
+        The Sanity Check appears to rely primarily on visual inspection of volatility smile movements under parameter perturbations. This is useful for detecting gross implementation issues but is not sufficient to establish that the model response is quantitatively correct.
+      </p>
+<p>
+        A directional response can still pass a visual check even when the magnitude of the response is materially wrong. For example, a scaling error in the treatment of ATM total variance, maturity normalisation, or wing-slope transformation may still produce a smile that moves in the expected direction, while producing economically incorrect sensitivities.
+      </p>
+<div class="risk-callout">
+<strong>Correction to include:</strong> If ν<sub>t</sub> represents ATM total variance, then a 10% increase in ν<sub>t</sub> does not imply a 10% increase in ATM implied volatility. For fixed maturity, the approximate ATM implied-volatility change is about 5%.
+      </div>
+<div class="math">
+        ν<sub>t</sub> = σ<sub>ATM</sub><sup>2</sup> t<br/>
+        σ<sub>ATM</sub> = √(ν<sub>t</sub> / t)<br/>
+        Δσ<sub>ATM</sub> / σ<sub>ATM</sub> ≈ 0.5 × Δν<sub>t</sub> / ν<sub>t</sub>
+</div>
+<p>
+        Therefore, the Sanity Check should define numerical acceptance criteria for each parameter perturbation. These should include expected ATM level changes, skew changes, curvature changes, and left/right wing-slope changes, measured using explicit tolerances rather than visual judgement alone.
+      </p>
+<div class="accept-callout">
+<strong>Recommended wording:</strong> The Sanity Check confirms broad directional behaviour but does not provide sufficient quantitative evidence to detect scaling errors, transformation errors, or unintended parameter coupling. Numerical pass/fail thresholds should be added for each parameter response.
+      </div>
+</section>
+<section class="card">
+<h3>Gap 2 — Call Wing Dependency on Put-Wing Slope</h3>
+<p>
+        The Sanity Check notes that the call wing may be affected when the put-wing slope parameter is shifted. This should not be treated merely as a plotting observation. It is relevant because SVI-JWK parameters are intended to provide economically interpretable controls over the ATM level, skew, kurtosis, put wing, and call wing.
+      </p>
+<p>
+        The point should be phrased carefully. Some degree of coupling is structurally expected because the SVI-JWK parameters are transformed into raw-SVI parameters, and the raw-SVI parameters can depend jointly on both put-wing and call-wing inputs. Therefore, the issue is not necessarily that the model is wrong. The issue is that the size and economic materiality of this coupling were not quantified in the Sanity Check.
+      </p>
+<div class="math">
+        b = √(ν<sub>t</sub> t) × (c<sub>t</sub> + p<sub>t</sub>) / 2
+      </div>
+<p>
+        Because the raw-SVI parameter <em>b</em> can depend on both c<sub>t</sub> and p<sub>t</sub>, changing the put-wing slope may influence the wider smile shape, including the call wing. This matters for trader marking, risk attribution, and sensitivity interpretation.
+      </p>
+<ul>
+<li>If p<sub>t</sub> materially affects the call wing, left-wing and right-wing marks are not fully independent in economic effect.</li>
+<li>Risk sensitivities to p<sub>t</sub> may contain call-wing exposure, and sensitivities to c<sub>t</sub> may contain put-wing exposure.</li>
+<li>This may help explain unexplained P&amp;L effects observed in wing-risk reconciliation.</li>
+</ul>
+<div class="accept-callout">
+<strong>Recommended wording:</strong> The Sanity Check identified cross-dependency between wing parameters, but the effect should have been quantified. A parameter cross-sensitivity matrix should be added to measure how shifts in p<sub>t</sub> and c<sub>t</sub> affect ATM volatility, skew, left-wing slope, right-wing slope, option PV, and Greeks.
+      </div>
+</section>
+<section class="card">
+<h3>Gap 3 — No Explicit ATM Strike Verification</h3>
+<p>
+        The Sanity Check plots smile shapes across strikes but does not appear to explicitly verify that the ATM point behaves as analytically expected. This is an important omission because the ATM point is the anchor of the SVI-JWK parameterisation.
+      </p>
+<p>
+        A robust test should verify, at minimum, the following ATM properties:</p>
+<ul>
+<li>When ν<sub>t</sub> changes, ATM implied volatility should move consistently with the ATM total-variance definition.</li>
+<li>When ψ<sub>t</sub> changes, the ATM level should remain stable while the local slope/skew changes.</li>
+<li>When p<sub>t</sub> or c<sub>t</sub> changes, the primary movement should be concentrated in the corresponding wing, subject to documented transformation coupling.</li>
+<li>When κ<sub>t</sub> changes, smile curvature should change without causing unintended ATM-level displacement beyond tolerance.</li>
+</ul>
+<div class="accept-callout">
+<strong>Recommended wording:</strong> The Sanity Check should include an ATM anchor table showing initial ATM volatility, shocked ATM volatility, expected change, observed change, tolerance, and pass/fail result for each SVI-JWK parameter perturbation.
+      </div>
+</section>
+<section class="card">
+<h3>Gap 4 — Single Market Date Tested</h3>
+<p>
+        The Sanity Check is based on a single market date. A single observation date can confirm behaviour under one market state, but it cannot establish robustness across materially different volatility regimes.
+      </p>
+<p>
+        SVI-JWK parameter behaviour may differ across high-volatility, low-volatility, steep-smile, flat-smile, and inverted-term-structure environments. This is particularly relevant for single-stock volatility surfaces and long-dated expiries, where parameter interactions may become more pronounced and less visually obvious.</p>
+<div class="accept-callout">
+<strong>Recommended wording:</strong> The Sanity Check should be repeated across multiple market regimes, for example high-volatility, low-volatility, steep-skew, flat-skew, and long-dated sparse-data environments. The current single-date test should be described as illustrative rather than conclusive.
+      </div>
+</section>
+<section class="card">
+<h3>Gap 5 — No Explicit Test of κ<sub>t</sub> Redefinition Impact</h3>
+<p>
+        This is one of the most important Sanity Check gaps. The model change includes a post-rescaling change in the definition of the kurtosis parameter. Therefore, the Sanity Check should explicitly verify that the revised κ<sub>t</sub> definition behaves consistently across maturities.</p>
+<p>
+        Testing κ<sub>t</sub> for a single expiry only verifies local curvature behaviour. It does not verify whether the revised maturity-normalised definition produces the intended behaviour at 1Y, 2Y, 5Y, and longer maturities. This is especially relevant because the observed concerns are concentrated in long-dated expiries.</p>
+<div class="risk-callout">
+<strong>Operational relevance:</strong> Ongoing monitoring that only tracks κ<sub>t</sub><sup>new</sup> may not directly control the raw-SVI no-arbitrage condition unless the full transformation chain from κ<sub>t</sub><sup>new</sup> to raw-SVI parameters and then to the g-function is applied consistently.
+      </div>
+<div class="accept-callout">
+<strong>Recommended wording:</strong> The Sanity Check should include a cross-maturity κ<sub>t</sub><sup>new</sup> test. For the same κ<sub>t</sub><sup>new</sup> input at 1Y, 2Y, 5Y, and longer tenors, the test should evidence the transformed raw-SVI parameters, resulting smile curvature, and no-arbitrage g-function output.
+      </div>
+</section>
+<section class="card">
+<h3>Gap 6 — No Iijima Baseline Comparison in the Sanity Check</h3>
+<p>
+        This is best classified as an enhancement rather than a standalone deficiency. Since the broader validation performs Iijima-versus-SVI-JWK comparison in the calibration analysis, it would be too strong to state that the comparison is absent from the validation overall.</p>
+<p>
+        However, from a validation-flow perspective, including a simple baseline comparison at the Sanity Check stage would have been useful. It would establish that SVI-JWK produces broadly consistent near-ATM and short-to-medium maturity smile behaviour in regions where the previous model was known to perform reasonably well.</p>
+<div class="enhancement-callout">
+<strong>Recommended wording:</strong> The absence of an Iijima comparison in the Sanity Check should be treated as an enhancement point. Adding a simple Iijima-versus-SVI-JWK overlay at the initial sanity-check stage would improve model-change traceability before moving to detailed calibration analysis.
+      </div>
+</section>
+<section class="card">
+<h3>Gap 7 — Long-Dated SoftBank/9984 Sensitivity Observation Not Fully Evidenced</h3>
+<p>
+        The Sanity Check notes reduced visibility of put-wing and call-wing sensitivity for a long-dated SoftBank/9984 trade and attributes this to the long tenor and lower sensitivity of the smile to wing-slope changes. This explanation is plausible, but it should be supported by numerical evidence.</p>
+<p>
+        The concern should not be phrased as a definitive conclusion that the model does not respond to wing parameters. A more accurate validation framing is that reduced sensitivity may weaken the economic interpretability of wing marks for long-dated names and should therefore be quantified.</p>
+<ul>
+<li>Show PV and Greek changes under controlled shocks to p<sub>t</sub> and c<sub>t</sub>.</li>
+<li>Show left-wing and right-wing slope changes before and after the shock.</li>
+<li>Compare the magnitude of sensitivity for short-dated versus long-dated expiries.</li>
+<li>Evidence whether the reduced response is a maturity effect, a data-quality effect, or a transformation effect.</li>
+</ul>
+<div class="accept-callout">
+<strong>Recommended wording:</strong> The SoftBank/9984 observation should be escalated from a qualitative explanation to a targeted validation check. A numerical sensitivity table should be added for long-dated material trades to evidence whether wing parameters remain economically meaningful.
+      </div>
+</section>
+<h2>3. Proposed Wording for the Validation Document</h2>
+<section class="card">
+<p>
+        The Sanity Check provides a useful first-order review of directional smile behaviour under SVI-JWK parameter perturbations. However, the test is primarily qualitative and visual, and therefore does not provide sufficient evidence that the implementation is quantitatively correct. The validation should define numerical acceptance criteria for each parameter shock, including the expected ATM-level response, skew response, curvature response, and wing-slope response.
+      </p>
+<p>
+        In particular, where ν<sub>t</sub> represents ATM total variance, the expected ATM implied-volatility response should be assessed using the relationship σ<sub>ATM</sub> = √(ν<sub>t</sub> / t). For a fixed maturity, a small relative change in ν<sub>t</sub> should translate into approximately half that relative change in ATM implied volatility. This type of quantitative benchmark is necessary to detect scaling or transformation errors that may not be visible from smile plots alone.
+      </p>
+<p>
+        The Sanity Check also identifies parameter cross-effects, including the impact of put-wing slope changes on the call wing. This should be investigated quantitatively rather than treated only as a qualitative observation. Some coupling is expected because the SVI-JWK parameters are transformed into raw-SVI parameters, but the magnitude of this coupling should be measured through a cross-sensitivity matrix. This is important for trader marking, model interpretability, and risk attribution.
+      </p>
+<p>
+        The validation should additionally test ATM anchoring explicitly. For each parameter perturbation, the test should report the expected ATM behaviour, observed ATM behaviour, tolerance, and pass/fail result. This would strengthen the evidence that ν<sub>t</sub>, ψ<sub>t</sub>, κ<sub>t</sub>, p<sub>t</sub>, and c<sub>t</sub> are being applied consistently with their intended economic interpretation.
+      </p>
+<p>
+        The Sanity Check should also be extended beyond a single market date. At minimum, testing should cover multiple volatility regimes, including high-volatility, low-volatility, steep-skew, flat-skew, and long-dated sparse-data environments. The current single-date test should be regarded as illustrative, not conclusive.
+      </p>
+<p>
+        Finally, given the post-rescaling change in the κ<sub>t</sub> definition, the validation should include a dedicated cross-maturity κ<sub>t</sub><sup>new</sup> test. This test should evidence the full transformation from operational SVI-JWK parameters to raw-SVI parameters and then to the no-arbitrage g-function used in the validation. This is particularly important for long-dated expiries, where arbitrage risk and parameter-definition sensitivity are more material.
+      </p>
+</section>
+<h2>4. Recommended Additional Test Evidence</h2>
+<table>
+<thead>
+<tr>
+<th>Test Evidence</th>
+<th>Purpose</th>
+<th>Expected Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ATM anchor table</td>
+<td>Verify that ATM volatility responds correctly to ν<sub>t</sub> and remains stable under parameters intended to affect skew, curvature, or wings.</td>
+<td>Expected ATM change, observed ATM change, tolerance, pass/fail.</td>
+</tr>
+<tr>
+<td>Parameter cross-sensitivity matrix</td>
+<td>Quantify unintended or structural coupling between ν<sub>t</sub>, ψ<sub>t</sub>, κ<sub>t</sub>, p<sub>t</sub>, and c<sub>t</sub>.</td>
+<td>Matrix of changes in ATM vol, skew, curvature, put-wing slope, call-wing slope, PV, and Greeks.</td>
+</tr>
+<tr>
+<td>Cross-maturity κ<sub>t</sub><sup>new</sup> test</td>
+<td>Verify that the revised κ<sub>t</sub> definition behaves consistently across 1Y, 2Y, 5Y, and longer tenors.</td>
+<td>Operational parameters, transformed raw-SVI parameters, curvature metrics, g-function output.</td>
+</tr>
+<tr>
+<td>Multi-regime Sanity Check</td>
+<td>Demonstrate robustness across market regimes rather than one observation date.</td>
+<td>Same parameter-shock suite repeated across high-vol, low-vol, steep-skew, flat-skew, and sparse long-dated data.</td>
+</tr>
+<tr>
+<td>Long-dated material-trade sensitivity table</td>
+<td>Evidence whether wing parameters remain economically meaningful for long-dated names.</td>
+<td>PV, Greeks, ATM vol, wing slopes, and g-function results before and after p<sub>t</sub>/c<sub>t</sub> shocks.</td>
+</tr>
+<tr>
+<td>Optional Iijima overlay</td>
+<td>Improve model-change traceability at the sanity-check stage.</td>
+<td>Near-ATM and short-to-medium maturity smile comparison between previous model and SVI-JWK.</td>
+</tr>
+</tbody>
+</table>
+<h2>5. Final Assessment</h2>
+<section class="card">
+<p>
+        The seven proposed observations are broadly correct, but they should not all be presented with the same severity. Gaps 1, 2, 3, 4, 5, and 7 are appropriate Sanity Check limitations. Gap 6 is better framed as an enhancement to validation sequencing, because the model comparison is addressed elsewhere in the validation pack.
+      </p>
+<p>
+        The strongest finding is that the Sanity Check is visually persuasive but not numerically controlled. The next strongest finding is the absence of an explicit cross-maturity test for the post-rescaling κ<sub>t</sub> definition, especially given the action-plan focus on long-dated 5Y+ trades and arbitrage monitoring.
+      </p>
+<div class="callout">
+<strong>Suggested conclusion:</strong> The Sanity Check should be accepted only as a preliminary plausibility check. It should not be relied upon as evidence of full implementation correctness, parameter independence, long-maturity robustness, or no-arbitrage monitoring readiness without the additional quantitative evidence described above.
+      </div>
+</section>
+
+</main>
+</body>
+</html>
