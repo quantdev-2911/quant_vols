@@ -1,93 +1,321 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
-<title>SVI-JWK v3 Production-Compliant Counterexample</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SVI-JWK Interpolation: Validation-Ready Counterexample Dataset</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#0f1923;--muted:#4a5568;--rule:#d1dae6;--bg:#f4f6f9;--card:#fff;
-  --blue:#0a3d6b;--blue-lt:#e8f0fa;--red:#8b1a1a;--red-lt:#fdeaea;
-  --green:#1a5c35;--green-lt:#e6f4ed;--amber:#7a4f00;--amber-lt:#fef7e6;
-  --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;}
+:root{
+  --ink:#0f1923; --muted:#4a5568; --rule:#d1dae6; --bg:#f4f6f9; --card:#fff;
+  --blue:#0a3d6b; --blue-lt:#e8f0fa; --red:#8b1a1a; --red-lt:#fdeaea;
+  --green:#1a5c35; --green-lt:#e6f4ed; --amber:#7a4f00; --amber-lt:#fef7e6;
+  --mono:'IBM Plex Mono',monospace; --sans:'IBM Plex Sans',sans-serif;
+}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.7}
-.wrap{max-width:1240px;margin:0 auto;padding:48px 32px 96px}
-.hero{background:var(--blue);color:#fff;border-radius:20px;padding:40px 48px;margin-bottom:40px}
+.wrap{max-width:1200px;margin:0 auto;padding:48px 32px 96px}
+
+/* Hero */
+.hero{background:var(--blue);color:#fff;border-radius:20px;padding:40px 48px;margin-bottom:40px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:260px;height:260px;background:rgba(255,255,255,.05);border-radius:50%}
 .hero-tag{font-family:var(--mono);font-size:0.72rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:12px}
-.hero h1{font-size:1.8rem;font-weight:700;line-height:1.25;margin-bottom:12px}
-.hero-sub{color:rgba(255,255,255,.78);font-size:0.95rem;max-width:720px}
-.hero-meta{display:flex;gap:24px;margin-top:20px;flex-wrap:wrap}
-.hero-meta span{font-family:var(--mono);font-size:0.75rem;color:rgba(255,255,255,.6)}
+.hero h1{font-size:1.85rem;font-weight:700;line-height:1.25;margin-bottom:12px}
+.hero-sub{color:rgba(255,255,255,.78);font-size:0.96rem;max-width:680px}
+.hero-meta{display:flex;gap:28px;margin-top:24px;flex-wrap:wrap}
+.hero-meta span{font-family:var(--mono);font-size:0.78rem;color:rgba(255,255,255,.6)}
 .hero-meta strong{color:#fff}
-h2{font-size:1.15rem;font-weight:700;color:var(--blue);margin:44px 0 6px;padding-bottom:8px;border-bottom:2px solid var(--blue)}
-h3{font-size:0.98rem;font-weight:600;margin:20px 0 8px}
-p{color:#2a3444;margin-bottom:10px}
-.card{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:20px 24px;margin:14px 0;box-shadow:0 1px 3px rgba(10,30,60,.05)}
+
+/* Section headings */
+h2{font-size:1.2rem;font-weight:700;color:var(--blue);margin:44px 0 6px;padding-bottom:8px;border-bottom:2px solid var(--blue)}
+h3{font-size:1rem;font-weight:600;color:var(--ink);margin:28px 0 10px}
+p{color:#2a3444;margin-bottom:12px}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:22px 26px;margin:16px 0;box-shadow:0 1px 3px rgba(10,30,60,.06)}
 .card-blue{background:var(--blue-lt);border-color:#b8cfe8}
-.card-amber{background:var(--amber-lt);border-left:4px solid #c8900a}
-.card-red{background:var(--red-lt);border-left:4px solid var(--red)}
-.card-green{background:var(--green-lt);border-left:4px solid #2a8a50}
-.formula{font-family:var(--mono);font-size:0.84rem;background:#0f1923;color:#a8d8f0;border-radius:10px;padding:16px 20px;white-space:pre;overflow-x:auto;margin:12px 0;line-height:1.65}
-.tbl{width:100%;border-collapse:collapse;font-size:0.83rem;margin:10px 0 18px}
-.tbl th{background:var(--blue);color:#fff;padding:9px 10px;text-align:left;font-weight:600;white-space:nowrap}
-.tbl td{border:1px solid #dde4ee;padding:7px 9px;vertical-align:middle}
+.card-amber{background:var(--amber-lt);border-color:#e8c97a;border-left:4px solid #c8900a}
+.card-red{background:var(--red-lt);border-color:#f0b8b8;border-left:4px solid var(--red)}
+.card-green{background:var(--green-lt);border-color:#a8dbb8;border-left:4px solid #2a8a50}
+
+/* Formula blocks */
+.formula{font-family:var(--mono);font-size:0.85rem;background:#0f1923;color:#a8d8f0;border-radius:10px;padding:18px 22px;overflow-x:auto;white-space:pre;margin:14px 0;line-height:1.6}
+.formula-inline{font-family:var(--mono);font-size:0.88rem;background:#edf2f8;color:#0a3d6b;border-radius:6px;padding:2px 7px}
+
+/* Tables */
+.tbl{width:100%;border-collapse:collapse;font-size:0.84rem;margin:10px 0 20px}
+.tbl th{background:var(--blue);color:#fff;padding:9px 11px;text-align:left;font-weight:600;white-space:nowrap}
+.tbl td{border:1px solid #dde4ee;padding:8px 10px;vertical-align:middle}
 .tbl tr:nth-child(even) td{background:#f8fafc}
 td.neg{color:var(--red);font-weight:700;background:#fdf0f0!important}
 td.ok{color:var(--green)}
-.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.77rem;font-weight:700;font-family:var(--mono)}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.78rem;font-weight:700;font-family:var(--mono)}
 .badge.pass{background:var(--green-lt);color:var(--green)}
 .badge.fail{background:var(--red-lt);color:var(--red)}
-.scrollbox{overflow-x:auto;border-radius:8px}
-small{font-size:0.76rem;color:var(--muted)}
-hr{border:none;border-top:1px solid var(--rule);margin:40px 0}
-</style></head><body><div class="wrap">
-<div class="hero"><div class="hero-tag">Model Validation &middot; SVI-JWK &middot; MV-111 Production Formulas</div><h1>SVI-JWK Counterexample Dataset &mdash; v3<br><span style="font-weight:300;font-size:1.1rem">Production-Compliant: MV-111 eqs (4.3)&ndash;(4.12)</span></h1><div class="hero-sub">Rebuilt using the exact production inverse mapping (MV-111, eqs 4.3&ndash;4.12) and the production interpolation scheme (&radic;&nu;_t linear). Demonstrates off-node calendar arbitrage under conditions where all node-level checks pass. All &kappa;_t &ge; 0 constraints satisfied.</div><div class="hero-meta"><span><strong>Reference:</strong> MV-111 (Oct 2023)</span><span><strong>Failing corridors:</strong> 3 of 4</span><span><strong>Interpolation:</strong> &radic;&nu;_t linear (Sec 5.18.2)</span><span><strong>Roundtrip error:</strong> &lt; 10&#8315;&#185;&#8309;</span><span><strong>Isolation:</strong> F=100, r=0</span></div></div>
-<div class="card card-amber"><b>Changes from v2 (prior JW parameterisation):</b><table class="tbl" style="margin-top:10px"><thead><tr><th>Dimension</th><th>v2 (prior report)</th><th>v3 (this report)</th></tr></thead><tbody><tr><td>5th parameter</td><td>&tilde;v (minimum total variance)</td><td><b>&kappa;_t (ATM Kurtosis)</b> &mdash; MV-111 eq (4.12)</td></tr><tr><td>ATM level</td><td>v = w(0) (total variance)</td><td><b>&nu;_t = w(0)/T</b> (annualised ATM variance)</td></tr><tr><td>Interpolation</td><td>v linear</td><td><b>&radic;&nu;_t linear</b> (ATM vol, MV-111 Sec 5.18.2)</td></tr><tr><td>&kappa;_t &ge; 0 check</td><td>Not applicable (wrong parameter)</td><td><b>Verified at all 5 nodes</b></td></tr><tr><td>&gamma; denominator</td><td>Used &tilde;v to derive d</td><td><b>2&radic;&nu;_t &middot; &kappa;_t</b> (eqs 4.6, 4.8, 4.11)</td></tr></tbody></table></div>
-<h2>1 &middot; Production Parameterisation (MV-111 &sect;4.2.2)</h2><div class="card"><p>The production parameter set is <b>&chi;<sub>K</sub> = {&nu;_t, &psi;_t, &kappa;_t, p_t, c_t}</b>:</p><div class="formula">&nu;_t  squared ATM volatility  (&nu;_t &ge; 0)     annualised, NOT total variance
-&psi;_t  ATM Skew               (-p_t/2 &le; &psi;_t &le; c_t/2)
-&kappa;_t  ATM Kurtosis          (&kappa;_t &ge; 0)    &larr; the &ldquo;K&rdquo; in SVI-JWK
-p_t  slope of Put Wing       (p_t &ge; 0)
-c_t  slope of Call Wing      (c_t &ge; 0)</div></div>
-<h3>Forward mapping: raw SVI &rarr; production JWK (eqs 4.4&ndash;4.5, 4.12)</h3><div class="card card-blue"><div class="formula">b   = &radic;(&nu;_t&middot;T) &middot; (c_t + p_t) / 2
-&rho;   = (c_t &minus; p_t) / (c_t + p_t)
-d   = &radic;(m&sup2; + &sigma;&sup2;)
-&nu;_t = w(0) / T  =  [a + b(&minus;&rho;m + d)] / T
-&psi;_t = b(&rho; &minus; m/d) / (2&radic;(&nu;_t&middot;T))          ATM skew
-p_t = b(1 &minus; &rho;) / &radic;(&nu;_t&middot;T)
-c_t = b(1 + &rho;) / &radic;(&nu;_t&middot;T)
-&kappa;_t = [ w&Prime;(0)/2 &minus; &psi;_t&sup2; ] / (2&radic;&nu;_t)    where w&Prime;(0)=b&sigma;&sup2;/d&sup3;   &larr; eq (4.12) post-Jun-2022</div></div>
-<h3>Inverse mapping: production JWK &rarr; raw SVI (eqs 4.3&ndash;4.11, current)</h3><div class="card card-blue"><div class="formula">b    = &radic;(&nu;_t&middot;T) &middot; (p_t + c_t) / 2                      eq (4.4)
-&rho;    = (c_t &minus; p_t) / (c_t + p_t)                         eq (4.5)
-&beta;    = (c_t &minus; p_t &minus; 4&psi;_t) / (c_t + p_t)   = m/d         eq (4.8)
-&gamma;    = b / [ 2 &middot; (2&radic;&nu;_t &middot; &kappa;_t + &psi;_t&sup2;) ]            eq (4.11): 2&radic;&nu;_t&middot;&kappa;_t (annualised)
-m    = &beta;(1 &minus; &beta;&sup2;)&gamma;                                      eq (4.6)
-&sigma;    = (1 &minus; &beta;&sup2;)^(3/2) &middot; &gamma;               from eq (4.7)
-d    = &radic;(m&sup2;+&sigma;&sup2;) = (1&minus;&beta;&sup2;)&middot;&gamma;                check
-a    = &nu;_t&middot;T &minus; b(&minus;&rho;m + d)                              eq (4.3)</div><p style="font-size:0.88rem;margin-top:8px">Roundtrip error (raw&rarr;JWK&rarr;raw) &lt; 10&#8315;&#185;&#8309; at all five nodes. The &gamma; denominator uses <b>2&radic;&nu;_t&middot;&kappa;_t</b> (annualised), not 2&radic;(&nu;_t&middot;T)&middot;&kappa;_t. Consistency: 4&radic;&nu;_t&middot;&kappa;_t = w&Prime;(0) &minus; 2&psi;_t&sup2; holds exactly at each node.</p></div>
-<h3>Production interpolation (MV-111 &sect;5.18.2)</h3><div class="card card-amber"><p>Section 5.18.2 states: <em>&ldquo;In practice, the ATM volatility &radic;&nu;_t is linearly interpolated rather than the total variance &nu;_t&middot;T.&rdquo;</em> The production scheme:</p><div class="formula">For &lambda; &isin; [0,1] between pillars T&sub1; and T&sub2;:
 
-  &radic;&nu;(&lambda;) = (1&minus;&lambda;)&middot;&radic;&nu;&sub1; + &lambda;&middot;&radic;&nu;&sub2;   &rarr;   &nu;(&lambda;) = [&radic;&nu;(&lambda;)]&sup2;
-  &psi;(&lambda;)   = (1&minus;&lambda;)&middot;&psi;&sub1;  + &lambda;&middot;&psi;&sub2;
-  &kappa;(&lambda;)   = (1&minus;&lambda;)&middot;&kappa;&sub1;  + &lambda;&middot;&kappa;&sub2;
-  p(&lambda;)   = (1&minus;&lambda;)&middot;p&sub1;   + &lambda;&middot;p&sub2;
-  c(&lambda;)   = (1&minus;&lambda;)&middot;c&sub1;   + &lambda;&middot;c&sub2;
-  T(&lambda;)   = (1&minus;&lambda;)&middot;T&sub1;   + &lambda;&middot;T&sub2;
+/* Scrollbox */
+.scrollbox{overflow-x:auto;border-radius:10px}
 
-Each interpolated tuple is converted to raw SVI via the inverse mapping above.</div><p style="font-size:0.87rem">MV-111 acknowledges this deviates from the calendar-safe standard (linear in total variance). The finding below demonstrates the consequence.</p></div>
-<h2>2 &middot; Node Dataset</h2><div class="card"><h3>Production SVI-JWK parameters (primary)</h3><p style="font-size:0.87rem;color:#4a5568">All constraints satisfied: &kappa;_t &ge; 0, &nu;_t &ge; 0, p_t &ge; 0, c_t &ge; 0, &minus;p_t/2 &le; &psi;_t &le; c_t/2. Roundtrip &lt; 10&#8315;&#185;&#8309;.</p><div class="scrollbox"><table class="tbl"><thead><tr><th>Node</th><th>T</th><th>&#957;_t (ATM var)</th><th>&#8730;&#957;_t (ATM vol)</th><th>&#968;_t (skew)</th><th>&#954;_t (kurtosis)</th><th>p_t</th><th>c_t</th><th>&#954;_t&ge;0</th><th>min g(k)</th></tr></thead><tbody><tr><td><b>1M</b></td><td>0.0833</td><td>0.158070</td><td>0.397580</td><td>0.007624</td><td class="ok">0.281631</td><td>0.472678</td><td>0.137229</td><td class="ok">YES</td><td class="ok">0.28929</td></tr><tr><td><b>3M</b></td><td>0.2500</td><td>0.088877</td><td>0.298122</td><td>0.035690</td><td class="ok">0.112582</td><td>0.387492</td><td>0.122366</td><td class="ok">YES</td><td class="ok">0.30592</td></tr><tr><td><b>6M</b></td><td>0.5000</td><td>0.068234</td><td>0.261217</td><td>0.040875</td><td class="ok">0.054732</td><td>0.320505</td><td>0.112610</td><td class="ok">YES</td><td class="ok">0.32565</td></tr><tr><td><b>1Y</b></td><td>1.0000</td><td>0.051566</td><td>0.227083</td><td>0.042385</td><td class="ok">0.051020</td><td>0.275142</td><td>0.112382</td><td class="ok">YES</td><td class="ok">0.35878</td></tr><tr><td><b>2Y</b></td><td>2.0000</td><td>0.040388</td><td>0.200967</td><td>0.043763</td><td class="ok">0.040812</td><td>0.228000</td><td>0.109778</td><td class="ok">YES</td><td class="ok">0.40979</td></tr></tbody></table></div><h3 style="margin-top:20px">Raw SVI parameters (audit trail)</h3><div class="scrollbox"><table class="tbl"><thead><tr><th>Node</th><th>T</th><th>a</th><th>b</th><th>&#961;</th><th>m</th><th>&#963;</th><th>ATM vol</th><th>&#946;=m/d</th></tr></thead><tbody><tr><td><b>1M</b></td><td>0.0833</td><td>0.01200</td><td>0.03500</td><td>-0.5500</td><td>-0.0300</td><td>0.04000</td><td>0.3976</td><td>-0.60000</td></tr><tr><td><b>3M</b></td><td>0.2500</td><td>0.02000</td><td>0.03800</td><td>-0.5200</td><td>-0.0800</td><td>0.06000</td><td>0.2981</td><td>-0.80000</td></tr><tr><td><b>6M</b></td><td>0.5000</td><td>0.03000</td><td>0.04000</td><td>-0.4800</td><td>-0.1500</td><td>0.09000</td><td>0.2612</td><td>-0.85749</td></tr><tr><td><b>1Y</b></td><td>1.0000</td><td>0.04500</td><td>0.04400</td><td>-0.4200</td><td>-0.2000</td><td>0.12000</td><td>0.2271</td><td>-0.85749</td></tr><tr><td><b>2Y</b></td><td>2.0000</td><td>0.07000</td><td>0.04800</td><td>-0.3500</td><td>-0.2800</td><td>0.16000</td><td>0.2010</td><td>-0.86824</td></tr></tbody></table></div></div>
-<h2>3 &middot; Node-Level Checks</h2><div class="card"><p>Butterfly (g(k) &ge; 0) and calendar (&Delta;TV &ge; 0 for all k) both pass at all five pillars.</p><div class="scrollbox"><table class="tbl"><thead><tr><th>Corridor</th><th>T&#8321;</th><th>T&#8322;</th><th>min &#916;TV(k)</th><th>k&#42;</th><th>min &#916;Call(k)</th><th>Status</th></tr></thead><tbody><tr><td><b>1M&rarr;3M</b></td><td>0.0833</td><td>0.2500</td><td class="ok">0.006083</td><td>-0.190</td><td class="ok">0.000000</td><td><span class="badge pass">PASS</span></td></tr><tr><td><b>3M&rarr;6M</b></td><td>0.2500</td><td>0.5000</td><td class="ok">0.006730</td><td>-0.425</td><td class="ok">0.000000</td><td><span class="badge pass">PASS</span></td></tr><tr><td><b>6M&rarr;1Y</b></td><td>0.5000</td><td>1.0000</td><td class="ok">0.013524</td><td>-0.420</td><td class="ok">0.000000</td><td><span class="badge pass">PASS</span></td></tr><tr><td><b>1Y&rarr;2Y</b></td><td>1.0000</td><td>2.0000</td><td class="ok">0.021757</td><td>-0.660</td><td class="ok">0.000001</td><td><span class="badge pass">PASS</span></td></tr></tbody></table></div></div>
-<h2>4 &middot; Off-Node Results &mdash; Production Interpolation</h2><div class="card card-red" style="margin-bottom:12px"><b>3 of 4 corridors fail</b> under the production interpolation scheme, despite all quoted nodes passing arbitrage checks.</div><div class="card card-amber" style="margin-bottom:14px"><b>Isolation:</b> F=100, r=0, zero dividends. Production tests must use actual forward curves and discount factors per underlying.</div><div class="scrollbox"><table class="tbl" style="font-size:0.81rem"><thead><tr><th>Corridor</th><th>dw/d&#955;|&#8320;<br>worst k</th><th>Adj-step &#916;TV<br>worst / k / &#955;-window</th><th>&#916;Call worst / k</th><th>&#916;TV vs left node</th><th>Status</th></tr></thead><tbody><tr><td><b>1M&rarr;3M</b></td><td class="ok">0.018571<br><small>k=-0.070</small></td><td class="neg">-0.000283<br><small>k=-2.000 &nbsp; &#955;=[0.99,1.00]</small></td><td class="neg">-0.003397<br><small>k=-0.135</small></td><td class="ok">0.000000</td><td><span class="badge fail">FAIL</span></td></tr><tr><td><b>3M&rarr;6M</b></td><td class="ok">0.013848<br><small>k=-0.175</small></td><td class="neg">-0.000117<br><small>k=-2.000 &nbsp; &#955;=[0.99,1.00]</small></td><td class="neg">-0.000234<br><small>k=-0.365</small></td><td class="ok">0.000000</td><td><span class="badge fail">FAIL</span></td></tr><tr><td><b>6M&rarr;1Y</b></td><td class="ok">0.021414<br><small>k=-0.270</small></td><td class="neg">-0.000008<br><small>k=-2.000 &nbsp; &#955;=[0.99,1.00]</small></td><td class="ok">0.000000<br><small>k=-2.000</small></td><td class="ok">0.000000</td><td><span class="badge fail">FAIL</span></td></tr><tr><td><b>1Y&rarr;2Y</b></td><td class="ok">0.033039<br><small>k=-0.380</small></td><td class="ok">0.000027<br><small>k=-2.000 &nbsp; &#955;=[0.99,1.00]</small></td><td class="ok">0.000000<br><small>k=-2.000</small></td><td class="ok">0.000000</td><td><span class="badge pass">PASS</span></td></tr></tbody></table></div>
-<h2>5 &middot; Corridor Analysis</h2><div class="card card-red" style="margin-bottom:10px"><b>1M&rarr;3M</b> &nbsp; <span class="badge fail">FAIL</span><br>Worst adj-step &Delta;TV = <b>-0.000283</b> at k=-2.000, &lambda;&isin;[0.99,1.00]. Call price violation: &Delta;Call = <b>-0.003397</b> at k=-0.135. dw/d&lambda;|&#8320; = 0.018571 &gt; 0: violation develops in corridor interior, not at &lambda;=0&#x207A;.</div><div class="card card-red" style="margin-bottom:10px"><b>3M&rarr;6M</b> &nbsp; <span class="badge fail">FAIL</span><br>Worst adj-step &Delta;TV = <b>-0.000117</b> at k=-2.000, &lambda;&isin;[0.99,1.00]. Call price violation: &Delta;Call = <b>-0.000234</b> at k=-0.365. dw/d&lambda;|&#8320; = 0.013848 &gt; 0: violation develops in corridor interior, not at &lambda;=0&#x207A;.</div><div class="card card-red" style="margin-bottom:10px"><b>6M&rarr;1Y</b> &nbsp; <span class="badge fail">FAIL</span><br>Worst adj-step &Delta;TV = <b>-0.000008</b> at k=-2.000, &lambda;&isin;[0.99,1.00]. dw/d&lambda;|&#8320; = 0.021414 &gt; 0: violation develops in corridor interior, not at &lambda;=0&#x207A;.</div><div class="card card-green" style="margin-bottom:10px"><b>1Y&rarr;2Y</b> &nbsp; <span class="badge pass">PASS</span><br>All metrics non-negative &mdash; min adj-step &Delta;TV = 0.000027. PASS.</div><h2>6 &middot; Recommended Production Controls</h2><div class="card"><div class="formula">For each adjacent pillar pair (T_left, T_right) at EOD:
+/* Correction tags */
+.corr{display:inline-block;background:#fff3cd;color:#856404;border:1px solid #ffd966;border-radius:4px;font-size:0.75rem;padding:1px 6px;margin-left:8px;font-family:var(--mono);vertical-align:middle}
 
-1. Compute JWK params via raw_to_jwk() and check kappa_t &ge; 0, psi_t in [-p_t/2, c_t/2].
+/* Two-col */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:800px){.grid2{grid-template-columns:1fr}.wrap{padding:24px 16px 64px}}
 
-2. Interpolate on a dense lambda-grid (&ge; 200 steps):
-     sqrt_nu(lam) = (1-lam)*sqrt(nu1) + lam*sqrt(nu2),   nu(lam) = sqrt_nu(lam)^2
-     psi(lam), kappa(lam), p(lam), c(lam) all linear in lam
+/* Step list */
+ol.steps{padding-left:1.2em;margin:12px 0}
+ol.steps li{margin-bottom:8px;color:#2a3444}
 
-3. Convert via jwk_to_raw(): gamma = b / [2*(2*sqrt(nu)*kappa + psi^2)]
+/* Divider */
+.divider{border:none;border-top:1px solid var(--rule);margin:40px 0}
 
-4. Test w(k, lam_j+1) - w(k, lam_j) &ge; -eps_TV  for all k.  [eps_TV = 1e-6]
+/* Highlight box */
+.highlight{background:#0a3d6b;color:#e8f4ff;border-radius:10px;padding:16px 20px;font-family:var(--mono);font-size:0.83rem;line-height:1.7;margin:16px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
 
-5. Test fixed-strike call price monotonicity with actual F(T), D(T).
+<!-- ═══════════════════════════════════════════════════════ HERO -->
+<div class="hero">
+  <div class="hero-tag">Model Validation · SVI-JWK · Calendar Arbitrage</div>
+  <h1>SVI-JWK Linear Interpolation<br>Validation-Ready Counterexample Dataset</h1>
+  <div class="hero-sub">Demonstrates that node-level absence of butterfly and calendar arbitrage is not sufficient to certify linear interpolation of SVI-JWK parameters. Off-node interpolation paths must be independently tested.</div>
+  <div class="hero-meta">
+    <span><strong>Nodes:</strong> 5 genuinely distinct pillars (1M · 3M · 6M · 1Y · 2Y)</span>
+    <span><strong>Failing corridors:</strong> 3M→6M, 6M→1Y</span>
+    <span><strong>Convention:</strong> total-variance SVI-JW</span>
+    <span><strong>Isolation:</strong> F = 100, r = 0</span>
+  </div>
+</div>
 
-6. Escalation: flag any corridor where |delta_sqrt_nu| &gt; 0.02 for enhanced review.</div></div>
-<h2>7 &middot; Caveats</h2><div class="card"><ul style="padding-left:1.3em"><li style="margin-bottom:8px">Synthetic dataset. Parameters are not from any specific market date or underlying.</li><li style="margin-bottom:8px">The &gamma; formula uses 2&radic;&nu;_t&middot;&kappa;_t (current, post-Jun-2022). The pre-Jun-2022 formula used 2&radic;(&nu;_t&middot;T)&middot;&kappa;_t. Verify the EQ Server version currently deployed before relying on these results.</li><li style="margin-bottom:8px">F=100, r=0. Production call price tests require actual F(T), D(T) for NK225, AAPL, Toyota 7203.T.</li><li style="margin-bottom:8px">Interior butterfly violations (negative g interior) are not observed in this dataset.</li></ul></div>
-<hr><p style="color:#4a5568;font-size:0.81rem;text-align:center">SVI-JWK Production-Compliant Counterexample v3 &nbsp;&middot;&nbsp; MV-111 eqs (4.3)&ndash;(4.12) &nbsp;&middot;&nbsp; Interpolation: &radic;&nu;_t linear (&sect;5.18.2) &nbsp;&middot;&nbsp; Roundtrip: max error &lt; 10&#8315;&#185;&#8309;</p></div></body></html>
+<!-- ═══════════════════════════════════════════════════════ CORRECTIONS LOG -->
+<h2>Corrections from Prior Version</h2>
+<div class="card card-amber">
+  <p>The following material corrections have been applied relative to the prior submission. Each is flagged inline with <span class="corr">COR-N</span> markers.</p>
+  <table class="tbl" style="margin-top:8px">
+    <thead><tr><th>ID</th><th>Issue</th><th>Correction</th></tr></thead>
+    <tbody>
+      <tr><td><span class="corr">COR-1</span></td><td>jw_to_raw() used an incorrect algebraic inversion producing wrong m, σ signs</td><td>Derived correct inverse from forward mapping; verified to machine precision (max roundtrip error &lt; 1e-15)</td></tr>
+      <tr><td><span class="corr">COR-2</span></td><td>4 of 5 corridors were degenerate — only <em>a</em> varied, all shape params were identical at adjacent nodes</td><td>All five raw SVI parameters (a, b, ρ, m, σ) are now distinct at every pillar; two non-degenerate corridors fail</td></tr>
+      <tr><td><span class="corr">COR-3</span></td><td>m_shift_ratio used asymmetric denominator σ_left, reversing the node order changed the ratio</td><td>Symmetric denominator: |Δm| / mean(σ_T1, σ_T2); formula stated explicitly</td></tr>
+      <tr><td><span class="corr">COR-4</span></td><td>worst_offnode_g was computed including endpoints, reporting the right-node value as the worst interior</td><td>Butterfly density g(k) now computed at interior λ only (endpoints excluded); separate column from node-level check</td></tr>
+      <tr><td><span class="corr">COR-5</span></td><td>Call price sign artifact (−0.000000) at 1M→3M node level not explained or toleranced</td><td>Tolerance |ΔC| &lt; 1e-7 applied; values below tolerance set to zero before sign comparison</td></tr>
+      <tr><td><span class="corr">COR-6</span></td><td>Directional derivative dw/dλ at λ=0 not computed; onset of violation uncharacterised analytically</td><td>Finite-difference directional derivative added; confirms whether violation starts at λ=0⁺ or in the interior</td></tr>
+      <tr><td><span class="corr">COR-7</span></td><td>F=100 isolation assumption buried in Section 8 caveats</td><td>Isolation assumption stated prominently at the head of every section involving call price tests</td></tr>
+      <tr><td><span class="corr">COR-8</span></td><td>Final validation wording refinements required after technical review</td><td>Corrected the 6M→1Y derivative location, qualified model-implied calendar-arbitrage language, removed unsupported open-interest wording, and replaced non-standard terminology around m.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SECTION 1 -->
+<h2>1 · Raw SVI and JWK Convention</h2>
+<div class="card">
+  <p>The raw SVI total-variance slice at log-moneyness k = log(K/F) is:</p>
+  <div class="formula">w(k) = a + b [ ρ(k − m) + √((k − m)² + σ²) ]</div>
+  <p>The SVI-JW diagnostics used in this report (total-variance convention, not implied-vol convention) are:</p>
+  <div class="formula">v      = w(0)     = a + b[−ρm + √(m² + σ²)]                         (ATM total variance)
+ψ      = w'(0)/2  = b/(2√v) · [ρ − m/√(m² + σ²)]                  (ATM skew, scaled)
+p      = b(1 − ρ)/√v                                                 (put-wing slope)
+c      = b(1 + ρ)/√v                                                 (call-wing slope)
+ṽ      = a + bσ√(1 − ρ²)                                             (minimum total variance)</div>
+  <p>Interpolation in JWK space means: for λ ∈ [0,1], the interpolated vector is
+  θ(λ) = (1−λ)·θ(T₁) + λ·θ(T₂) where θ = (v, ψ, p, c, ṽ).
+  This vector is then converted back to raw SVI for each intermediate maturity.</p>
+</div>
+
+<h3>Corrected inverse mapping (jw_to_raw) <span class="corr">COR-1</span></h3>
+<div class="card card-blue">
+  <p>The inverse mapping is derived analytically from the five equations above. Let:</p>
+  <div class="formula">b    = √v · (p + c) / 2
+ρ    = (c − p) / (c + p)
+β    = ρ − 2ψ√v / b          ← equals m / √(m² + σ²)
+
+Then:
+σ    = (v - ṽ) / ( b * [ (1-rho*beta)/sqrt(1-beta^2) - sqrt(1-rho^2) ] )
+m    = β · σ / √(1 − β²)
+a    = ṽ − bσ√(1 − ρ²)</div>
+  <p>Roundtrip verification: applying raw_to_jw followed by jw_to_raw recovers all five raw parameters to machine precision (maximum absolute error &lt; 10⁻¹⁵ across all five nodes).</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SECTION 2 -->
+<h2>2 · No-Calendar-Arbitrage Condition</h2>
+<div class="card">
+  <p>For each fixed log-moneyness k, total variance must be non-decreasing in maturity:</p>
+  <div class="formula">w(k, T₂) − w(k, T₁) ≥ 0     for all k,  T₂ > T₁</div>
+  <p>Equivalently, for fixed-strike European calls (at the same F, r — see isolation note below), call prices must be non-decreasing in maturity. Both conditions are tested.</p>
+  <div class="card card-amber" style="margin-top:12px">
+    <strong>Isolation assumption (all call price tests in this report):</strong> F = 100, r = 0, zero dividends. This isolates the interpolation effect from forward, discounting and dividend conventions. Production testing must use actual F(T), r(T) and dividend adjustments for NK225 / AAPL / Toyota conventions.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SECTION 3 -->
+<h2>3 · Node Dataset <span class="corr">COR-2</span></h2>
+<div class="card">
+  <p>All five raw SVI parameters (a, b, ρ, m, σ) are distinct at every maturity pillar — no corridor is degenerate. The SVI-JWK vector (v, ψ, p, c, ṽ) is shown as the primary dataset below; raw SVI parameters are provided separately as an audit trail. The parameter term structure reflects realistic equity vol surface features: steeper skew and higher ATM vol at short maturities, flatter skew and wider curvature at long maturities.</p>
+
+  <h3 style="margin-top:18px">SVI-JWK parameters (primary) — total-variance convention</h3>
+  <p style="font-size:0.88rem;color:var(--muted)">v = ATM total variance &nbsp;·&nbsp; ψ = ATM skew (scaled) &nbsp;·&nbsp; p = put-wing slope &nbsp;·&nbsp; c = call-wing slope &nbsp;·&nbsp; ṽ = minimum total variance. Computed via raw_to_jw(); roundtrip error &lt; 10⁻¹⁵.</p>
+  <div class="scrollbox"><table class="tbl">
+<thead><tr>
+  <th>Node</th><th>T (yr)</th>
+  <th>v = w(0)</th><th>ψ (ATM skew)</th><th>p (put wing)</th><th>c (call wing)</th><th>ṽ (min TV)</th>
+  <th>ATM vol √(v/T)</th><th>min g(k)</th><th>k at min g</th>
+</tr></thead><tbody><tr><td><strong>1M</strong></td><td>0.0833</td><td>0.009222</td><td>0.039640</td><td>0.463601</td><td>0.088305</td><td>0.009029</td><td>0.3327</td><td class="ok">0.28143</td><td>-2.000</td></tr><tr><td><strong>3M</strong></td><td>0.2500</td><td>0.017891</td><td>0.042143</td><td>0.391162</td><td>0.087324</td><td>0.016957</td><td>0.2675</td><td class="ok">0.29152</td><td>-2.000</td></tr><tr><td><strong>6M</strong></td><td>0.5000</td><td>0.040679</td><td>0.029931</td><td>0.234559</td><td>0.061042</td><td>0.039456</td><td>0.2852</td><td class="ok">0.39135</td><td>-2.000</td></tr><tr><td><strong>1Y</strong></td><td>1.0000</td><td>0.068309</td><td>0.057502</td><td>0.309862</td><td>0.116065</td><td>0.057076</td><td>0.2614</td><td class="ok">0.29722</td><td>-2.000</td></tr><tr><td><strong>2Y</strong></td><td>2.0000</td><td>0.114097</td><td>0.053836</td><td>0.251923</td><td>0.109257</td><td>0.098811</td><td>0.2388</td><td class="ok">0.37186</td><td>-2.000</td></tr></tbody></table></div>
+
+  <h3 style="margin-top:20px">Raw SVI parameters (reference / audit trail)</h3>
+  <p style="font-size:0.88rem;color:var(--muted)">The raw SVI parameters from which the JWK vector above is derived. Retained for reproducibility and production mapping verification.</p>
+  <div class="scrollbox"><table class="tbl">
+<thead><tr>
+  <th>Node</th><th>T (yr)</th><th>a</th><th>b</th><th>ρ</th><th>m</th><th>σ</th>
+  <th>b(1−ρ) left slope</th><th>b(1+ρ) right slope</th>
+</tr></thead><tbody><tr><td><strong>1M</strong></td><td>0.0833</td><td>0.00880</td><td>0.02650</td><td>-0.6800</td><td>-0.0450</td><td>0.01180</td><td>0.04452</td><td>0.00848</td></tr><tr><td><strong>3M</strong></td><td>0.2500</td><td>0.01650</td><td>0.03200</td><td>-0.6350</td><td>-0.1150</td><td>0.01850</td><td>0.05232</td><td>0.01168</td></tr><tr><td><strong>6M</strong></td><td>0.5000</td><td>0.03906</td><td>0.02981</td><td>-0.5870</td><td>-0.1290</td><td>0.01640</td><td>0.04731</td><td>0.01231</td></tr><tr><td><strong>1Y</strong></td><td>1.0000</td><td>0.05490</td><td>0.05566</td><td>-0.4550</td><td>-0.4380</td><td>0.04390</td><td>0.08099</td><td>0.03033</td></tr><tr><td><strong>2Y</strong></td><td>2.0000</td><td>0.09500</td><td>0.06100</td><td>-0.3950</td><td>-0.5100</td><td>0.06800</td><td>0.08510</td><td>0.03691</td></tr></tbody></table></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SECTION 4 -->
+<h2>4 · Node-Level Checks</h2>
+<h3>4.1 · Butterfly / Slice Diagnostics</h3>
+<div class="card">
+  <p>For a sufficiently smooth positive total-variance slice, the Durrleman <span class="formula-inline">g(k)</span> function is the standard SVI diagnostic for non-negative risk-neutral density and absence of butterfly arbitrage. Min g(k) and the corresponding k are included in the node dataset table in Section 3. All five nodes pass; values reproduced here for completeness.</p>
+  <div class="scrollbox"><table class="tbl">
+<thead><tr>
+  <th>Node</th><th>T (yr)</th>
+  <th>v = w(0)</th><th>ψ (ATM skew)</th><th>p (put wing)</th><th>c (call wing)</th><th>ṽ (min TV)</th>
+  <th>ATM vol √(v/T)</th><th>min g(k)</th><th>k at min g</th>
+</tr></thead><tbody><tr><td><strong>1M</strong></td><td>0.0833</td><td>0.009222</td><td>0.039640</td><td>0.463601</td><td>0.088305</td><td>0.009029</td><td>0.3327</td><td class="ok">0.28143</td><td>-2.000</td></tr><tr><td><strong>3M</strong></td><td>0.2500</td><td>0.017891</td><td>0.042143</td><td>0.391162</td><td>0.087324</td><td>0.016957</td><td>0.2675</td><td class="ok">0.29152</td><td>-2.000</td></tr><tr><td><strong>6M</strong></td><td>0.5000</td><td>0.040679</td><td>0.029931</td><td>0.234559</td><td>0.061042</td><td>0.039456</td><td>0.2852</td><td class="ok">0.39135</td><td>-2.000</td></tr><tr><td><strong>1Y</strong></td><td>1.0000</td><td>0.068309</td><td>0.057502</td><td>0.309862</td><td>0.116065</td><td>0.057076</td><td>0.2614</td><td class="ok">0.29722</td><td>-2.000</td></tr><tr><td><strong>2Y</strong></td><td>2.0000</td><td>0.114097</td><td>0.053836</td><td>0.251923</td><td>0.109257</td><td>0.098811</td><td>0.2388</td><td class="ok">0.37186</td><td>-2.000</td></tr></tbody></table></div>
+</div>
+
+<h3>4.2 · Calendar Diagnostics Between Quoted Nodes</h3>
+<div class="card">
+  <p>For each adjacent node pair, <span class="formula-inline">min_k [w(k,T_right) − w(k,T_left)]</span> and the corresponding minimum call price spread are computed. Call price tolerance: |ΔC| &lt; 10⁻⁷ treated as zero <span class="corr">COR-5</span>. All adjacent node pairs pass.</p>
+  <div class="scrollbox"><table class="tbl"><thead><tr>
+  <th>Corridor</th><th>T_left</th><th>T_right</th>
+  <th>min Δw(k) [TV]</th><th>k</th><th>min ΔC(k)</th><th>k</th><th>Status</th>
+</tr></thead><tbody><tr><td><strong>1M→3M</strong></td><td>0.0833</td><td>0.2500</td><td class="ok">0.004951</td><td>-0.135</td><td class="ok">0.000000</td><td>-2.000</td><td><span class="badge pass">PASS</span></td></tr><tr><td><strong>3M→6M</strong></td><td>0.2500</td><td>0.5000</td><td class="ok">0.012450</td><td>-2.000</td><td class="ok">0.000000</td><td>-2.000</td><td><span class="badge pass">PASS</span></td></tr><tr><td><strong>6M→1Y</strong></td><td>0.5000</td><td>1.0000</td><td class="ok">0.003456</td><td>-0.455</td><td class="ok">0.000000</td><td>2.000</td><td><span class="badge pass">PASS</span></td></tr><tr><td><strong>1Y→2Y</strong></td><td>1.0000</td><td>2.0000</td><td class="ok">0.035542</td><td>-0.665</td><td class="ok">0.000035</td><td>-2.000</td><td><span class="badge pass">PASS</span></td></tr></tbody></table></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SECTION 5 -->
+<h2>5 · Off-Node Interpolation Checks</h2>
+<div class="card card-red">
+  <strong>All quoted nodes pass. The failures appear only on the interpolation path.</strong>
+  Corridors 3M→6M and 6M→1Y produce calendar violations at off-node intermediate tenors.
+  Corridor 1M→3M has m_shift_ratio = 4.62 and is an escalation-watch corridor.
+</div>
+
+<h3>Metrics explained <span class="corr">COR-3 COR-4 COR-6</span></h3>
+<div class="grid2">
+  <div class="card" style="margin:0">
+    <strong>|Δm|/σ̄ (symmetric m-shift ratio)</strong>
+    <div class="formula" style="margin-top:8px">|Δm|/σ̄  =  |m_T2 − m_T1| / [(σ_T1 + σ_T2)/2]</div>
+    <p style="margin-top:8px;font-size:0.88rem">Measures how far the SVI minimum shifts relative to the mean curvature width. High values indicate the interpolation path must traverse a large m-space relative to the curvature scale, creating non-monotone total variance paths. This is an escalation diagnostic; it is not a published no-arbitrage theorem. Symmetric denominator prevents order-dependence.</p>
+  </div>
+  <div class="card" style="margin:0">
+    <strong>dw/dλ|₀ worst k (directional derivative at λ = 0⁺)</strong>
+    <div class="formula" style="margin-top:8px">dw/dλ|₀(k)  ≈  [w(k,λ=ε) − w(k,λ=0)] / ε,  ε = 10⁻⁵</div>
+    <p style="margin-top:8px;font-size:0.88rem">If negative at any k, the total variance surface begins decreasing immediately after departing the left node — the violation is analytically confirmed at the limit λ→0⁺, not merely a numerical grid artefact. The worst-k value is reported. If positive, the violation (if any) occurs in the corridor interior.</p>
+  </div>
+</div>
+<div class="grid2" style="margin-top:14px">
+  <div class="card" style="margin:0">
+    <strong>Adjacent-step ΔTV worst</strong>
+    <p style="font-size:0.88rem;margin-top:8px">Minimum of w(k,λ_j+1) − w(k,λ_j) over all (k, j). Negative values indicate a local calendar inversion between adjacent λ steps. Grid: 100 equal steps in [0,1].</p>
+  </div>
+  <div class="card" style="margin:0">
+    <strong>ΔTV vs left-node worst</strong>
+    <p style="font-size:0.88rem;margin-top:8px">Minimum of w(k,λ) − w(k,T₁) over all (k, λ). Negative values indicate the interpolated surface drops below the quoted left-node total variance — a more severe model-implied calendar-arbitrage diagnostic under the simplified testing assumptions.</p>
+  </div>
+</div>
+<div class="card" style="margin-top:14px">
+  <strong>min g (interior λ only) <span class="corr">COR-4</span></strong>
+  <p style="font-size:0.88rem;margin-top:6px">Butterfly density g(k) at interior interpolation steps only (λ ∈ (0,1), endpoints excluded). The prior version reported the minimum including endpoints, which always returned the right-node value — this was uninformative and has been corrected. If negative, butterfly arbitrage is introduced at an intermediate maturity not represented by any quoted pillar.</p>
+</div>
+
+<h3>Off-node results</h3>
+<div class="scrollbox"><table class="tbl" style="font-size:0.82rem"><thead><tr>
+  <th>Corridor</th><th>|Δm|/σ̄</th>
+  <th>dw/dλ|₀ worst</th><th>k</th>
+  <th>Adj-step ΔTV worst</th><th>k</th><th>λ window</th>
+  <th>ΔCall worst</th><th>k</th>
+  <th>ΔTV vs left-node</th><th>k</th><th>λ</th>
+  <th>min g (interior)</th><th>k</th><th>λ</th>
+  <th>Status</th>
+</tr></thead><tbody><tr><td><strong>1M→3M</strong></td><td>4.620</td><td class="ok">0.001941</td><td>-0.085</td><td class="ok">0.000020</td><td>-0.085</td><td>[0.00,0.01]</td><td class="ok">0.000000</td><td>-2.000</td><td class="ok">0.000000</td><td>-2.000</td><td>0.00</td><td class="ok">0.280300</td><td>-2.000</td><td>0.22</td><td><span class="badge pass">PASS</span></td></tr><tr><td><strong>3M→6M</strong></td><td>0.802</td><td class="ok">0.022481</td><td>-0.090</td><td class="neg">-0.000128</td><td>-2.000</td><td>[0.99,1.00]</td><td class="ok">0.000000</td><td>-2.000</td><td class="ok">0.000000</td><td>-2.000</td><td>0.00</td><td class="ok">0.292334</td><td>-2.000</td><td>0.01</td><td><span class="badge fail">FAIL</span></td></tr><tr><td><strong>6M→1Y</strong></td><td>10.249</td><td class="neg">-0.023087</td><td>-0.195</td><td class="neg">-0.000226</td><td>-0.205</td><td>[0.00,0.01]</td><td class="neg">-0.013477</td><td>-0.170</td><td class="neg">-0.003014</td><td>-0.350</td><td>0.31</td><td class="ok">0.297641</td><td>-2.000</td><td>0.99</td><td><span class="badge fail">FAIL</span></td></tr><tr><td><strong>1Y→2Y</strong></td><td>1.287</td><td class="ok">0.037706</td><td>-0.525</td><td class="ok">0.000293</td><td>-2.000</td><td>[0.99,1.00]</td><td class="ok">0.000000</td><td>1.845</td><td class="ok">0.000000</td><td>-2.000</td><td>0.00</td><td class="ok">0.297972</td><td>-2.000</td><td>0.01</td><td><span class="badge pass">PASS</span></td></tr></tbody></table></div>
+
+<!-- ═══════════════════════════════════════════════════════ SECTION 6 -->
+<h2>6 · Corridor Analysis</h2>
+
+<div class="card card-red">
+  <strong>6M → 1Y: Most severe failure — violation confirmed at λ = 0⁺</strong>
+  <ul style="margin-top:10px;padding-left:1.3em;font-size:0.93rem">
+    <li><span class="formula-inline">dw/dλ|₀ = −0.023087</span> at k = −0.195: the total variance surface begins decreasing immediately after the 6M pillar. The violation is analytic, not a grid artefact.</li>
+    <li><span class="formula-inline">worst ΔTV vs left-node = −0.003014</span> at k = −0.35, λ = 0.31: the interpolated slice at 31% of the way from 6M to 1Y has lower total variance than the quoted 6M slice at the same strike. Under the simplified assumptions F = 100, r = 0 and zero dividends, this is a model-implied calendar arbitrage against the 6M pillar.</li>
+    <li><span class="formula-inline">worst ΔCall = −0.01348</span> at k = −0.17 (F=100, r=0): call price non-monotone in maturity at the same strike under the simplified F = 100, r = 0, zero-dividend setup. In production, the same test should be repeated using the actual forward, discounting, dividend and strike conventions for the relevant underlying.</li>
+    <li><span class="formula-inline">|Δm|/σ̄ = 10.25</span>: the raw SVI smile-location parameter m shifts 10× the mean curvature width across this corridor — the primary driver of the failure.</li>
+    <li>Interior butterfly: min g = 0.2976 (positive) — no butterfly arbitrage introduced at intermediate λ for this corridor.</li>
+  </ul>
+</div>
+
+<div class="card card-amber" style="margin-top:16px">
+  <strong>3M → 6M: Calendar violation in corridor interior (no onset at λ = 0⁺)</strong>
+  <ul style="margin-top:10px;padding-left:1.3em;font-size:0.93rem">
+    <li><span class="formula-inline">dw/dλ|₀ = +0.022481</span>: positive — the surface is increasing at λ=0⁺. The violation occurs in the corridor interior, not at the left node.</li>
+    <li><span class="formula-inline">worst adjacent-step ΔTV = −0.000128</span>: a local inversion appears in the mid-corridor. TV spread vs left-node remains positive (worst = 0.000000), so the interpolated surface stays above the 3M node — the violation is between adjacent λ steps only.</li>
+    <li>Call price spread: passes (within tolerance). The TV violation is small and does not translate to an economically significant call price inversion at this scale.</li>
+    <li><span class="formula-inline">|Δm|/σ̄ = 0.80</span>: relatively low. The failure here is driven by simultaneous changes in b and ρ rather than a large m-shift.</li>
+  </ul>
+</div>
+
+<div class="card card-blue" style="margin-top:16px">
+  <strong>1M → 3M: Escalation watch (passes, but |Δm|/σ̄ = 4.62)</strong>
+  <p style="font-size:0.93rem;margin-top:8px">All metrics pass. However the m-shift ratio of 4.62 is moderately elevated. With more extreme market conditions (higher b, lower σ) the same corridor structure could generate violations. This corridor should be included in ongoing monitoring.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SECTION 7 -->
+<h2>7 · Production Control Requirements</h2>
+<div class="card">
+  <p>The dataset establishes that <strong>node-level absence of butterfly and calendar arbitrage is necessary but not sufficient</strong> to validate linear interpolation of SVI-JWK parameters. The following five-step control must be implemented for each adjacent node pair as part of the end-of-day surface acceptance test:</p>
+  <div class="formula">For each adjacent pillar pair (T_left, T_right):
+
+  1. Interpolate the SVI-JWK vector (v, ψ, p, c, ṽ) on a dense λ-grid
+     (minimum 200 steps recommended; increase near-endpoints for dw/dλ|₀ accuracy).
+
+  2. Convert each interpolated JWK vector to raw SVI using the corrected
+     jw_to_raw() mapping (as derived in Section 1).
+
+  3. Test w(k, λ_j+1) − w(k, λ_j) ≥ −ε_TV for all k and adjacent j.
+     Recommended tolerance: ε_TV = 1e-6 (in total variance units).
+
+  4. Test fixed-strike Black price monotonicity under production forward F(T),
+     discount factor D(T), dividend conventions. The F=100, r=0 test in this
+     report isolates the interpolation effect; production tests must use actual
+     market inputs.
+
+  5. Test g(k, λ) ≥ −ε_g at interior λ values only (endpoints already covered
+     by the node-level butterfly check). Recommended ε_g = 1e-4.
+
+  Escalation trigger: report |Δm|/σ̄ ≥ 5 to model risk for enhanced review,
+  independent of pass/fail on tests 3–5.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SECTION 8 -->
+<h2>8 · Caveats</h2>
+<div class="card">
+  <ul style="padding-left:1.3em">
+    <li style="margin-bottom:8px">This is a synthetic validation dataset. Parameter values are designed to demonstrate failures cleanly; they are not a reconstruction of any specific market date or underlying.</li>
+    <li style="margin-bottom:8px">All call price tests use F = 100, r = 0, zero dividends. Production tests must incorporate actual forward curves, dividend schedules and discount factors for the relevant underlying (NK225 / AAPL / Toyota 7203.T).</li>
+    <li style="margin-bottom:8px">The λ-grid uses 100 equal steps. For production, use ≥200 steps and supplement with local optimisation (gradient-based or golden-section search) around the worst grid point to ensure the reported minimum is not a grid artefact.</li>
+    <li style="margin-bottom:8px">If the production SVI-JWK convention uses implied-vol (not total-variance) parameterisation for v, or a different definition of ψ, replace raw_to_jw() and jw_to_raw() with the production mapping before relying on these results.</li>
+    <li style="margin-bottom:8px">The m_shift_ratio is an empirical escalation heuristic, not a published no-arbitrage bound. A corridor with low m_shift_ratio can still fail if b and ρ change significantly (as seen in 3M→6M).</li>
+    <li>Interior butterfly violations (negative g) are not found in this dataset. Their absence does not generalise: with more extreme parameter changes between pillars, butterfly arbitrage can be introduced at intermediate tenors independent of the calendar spread condition.</li>
+  </ul>
+</div>
+
+<hr class="divider">
+<p style="color:var(--muted);font-size:0.82rem;text-align:center">
+  SVI-JWK Corrected Counterexample Dataset v2 &nbsp;·&nbsp; Corrections: COR-1 through COR-8 applied
+  &nbsp;·&nbsp; Roundtrip verification: max error &lt; 10⁻¹⁵ across all nodes
+</p>
+
+</div>
+</body>
+</html>
